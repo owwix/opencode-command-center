@@ -1,10 +1,10 @@
-# OpenCode Lab
+# OpenCode Command Center
 
-Docker-isolated [OpenCode](https://opencode.ai) harness: mount any
-project, route models through a local credential gateway, and keep secrets out
-of the agent container.
+The independent control plane for [OpenCode](https://opencode.ai): open any
+project in an isolated workspace, operate parallel agent runs, and accept only
+reviewed, verified changes.
 
-OpenCode Lab is an independent project. It is not affiliated with, endorsed by,
+OpenCode Command Center is an independent project. It is not affiliated with, endorsed by,
 or sponsored by OpenCode or its maintainers. OpenCode is a separate upstream
 project and its name and trademarks remain with their respective owners.
 
@@ -32,8 +32,8 @@ Install a global launcher (optional):
 
 ```bash
 npm link
-lab --setup
-lab open "$HOME/Projects/some-app"
+occtl --setup
+occtl open "$HOME/Projects/some-app"
 ```
 
 macOS shortcut: `launch-opencode.command`.
@@ -51,32 +51,33 @@ macOS shortcut: `launch-opencode.command`.
 
 ## Project lifecycle
 
-The `lab` launcher works from any directory. With no path, `lab open` uses the
-workspace picker; `lab new` creates one exact empty directory before opening it.
+The `occtl` launcher works from any directory. With no path, `occtl open` uses
+the workspace picker; `occtl new` creates one exact empty directory before opening it.
 Recent projects and active launches come from the host-owned project registry,
 not from files written into a mounted repository.
 
 ```bash
-lab open [path]
-lab new [path]
-lab recent                    # add --json for machine-readable output
-lab status                    # foreground + background activity
-lab stop                      # SIGTERM only after verifying the launcher PID
-lab resume [index|name|path]
-lab init [path] [--pack id] [--yes] # preview and approve contract v1
-lab doctor [path]
-lab prune [--apply]
-lab version
-lab update [--ref REF]
-lab rollback
+occtl open [path]
+occtl new [path]
+occtl recent                    # add --json for machine-readable output
+occtl status                    # foreground + background activity
+occtl stop                      # SIGTERM only after verifying the launcher PID
+occtl resume [index|name|path]
+occtl init [path] [--pack id] [--yes] # preview and approve contract v1
+occtl doctor [path]
+occtl prune [--apply]
+occtl version
+occtl update [--ref REF]
+occtl rollback
 ```
 
-The v0.x forms remain aliases: `opencode-lab`, `--workspace <path>`, managed
-`task` commands, and `--setup` continue to work.
+The previous `lab` and `opencode-lab` commands remain compatibility aliases;
+`--workspace <path>`, managed `task` commands, and `--setup` also continue to
+work.
 
 Projects may commit `.opencode-lab/project.json` to declare install, verify,
 development, preview, artifact, risk, and enabled-pack metadata. Without it,
-Lab uses a read-only detected contract. See the
+Command Center uses a read-only detected contract. See the
 [project contract reference](docs/project-contract.md).
 Runtime compatibility, staged updates, backups, and rollback are documented in
 the [compatibility reference](docs/compatibility.md).
@@ -95,28 +96,31 @@ stay disabled. Generic research selects Hound automatically; loaded packs
 declare whether their agents require research or design tooling.
 
 ```bash
-lab open --with-research               # Hound only
-lab open --with-design                 # OpenDesign only
-lab open --full-tools                  # both optional stacks
-lab open --rebuild --with-research     # rebuild only core + research images
+occtl open --with-research               # Hound only
+occtl open --with-design                 # OpenDesign only
+occtl open --full-tools                  # both optional stacks
+occtl open --rebuild --with-research     # rebuild only core + research images
 ```
 
 Launcher-only flags are removed before OpenCode starts. Warm launches reuse
-images; use `--rebuild` after changing a Dockerfile or image build input.
+matching images. Command Center automatically rebuilds the core OpenCode image
+when its Dockerfile fingerprint is missing or stale; use `--rebuild` only to
+force every selected profile image to rebuild.
 Switching agents with Tab during an existing interactive session cannot start a
 new tool stack: relaunch with `--with-research` or `--with-design` first.
 
-Lab keeps one foreground interactive workspace. Opening another shows the
+Command Center keeps one foreground interactive workspace. Opening another shows the
 canonical path and PID of the active launch, then offers to resume it or stop it
 before opening the new project. Background managed runs register separately and
 continue without taking foreground ownership. Project/session/helper ownership
-is recorded in the host-owned OpenCode Lab state directory; no project receives
-the launch registration token or access to that registry. On macOS this is
-`~/Library/Application Support/OpenCode Lab/state`. Preferences live beside it
+is recorded in host-owned state; no project receives the launch registration
+token or access to that registry. To preserve existing installations, the v0.x
+on-disk namespace remains
+`~/Library/Application Support/OpenCode Lab/state` on macOS. Preferences live beside it
 under the host-owned `config` directory. Runtime config, run state, logs, and
 approval preferences are never created in a selected repository.
 
-Lab adds only compatibility patterns to the repository-local
+Command Center adds only compatibility patterns to the repository-local
 `.git/info/exclude`; it does not edit `.gitignore`. Credential files that
 already exist are masked with empty read-only mounts. Missing `.env`, `.npmrc`,
 and related paths are redirected inside the container, so Docker does not
@@ -150,7 +154,7 @@ agents and commands without changing core. See `docs/packs.md`,
 
 ## Local preview contract
 
-Inside Lab, apps bind `:3000` / `:3001`. On the Mac open only:
+Inside Command Center, apps bind `:3000` / `:3001`. On the Mac open only:
 
 - `http://127.0.0.1:3100`
 - `http://127.0.0.1:3101`
@@ -178,7 +182,7 @@ npm run lab:browser -- http://127.0.0.1:3100
 ```
 
 Foreground, background, parallel, and fleet work use the same durable run
-records. Lab reconciles interrupted heartbeats at startup, preserves a Git
+records. Command Center reconciles interrupted heartbeats at startup, preserves a Git
 recovery ref for every managed worktree, and refuses cleanup while changes are
 dirty or have not been adopted/published.
 
@@ -213,7 +217,7 @@ see the [public/private product boundary](docs/product-boundary.md).
 
 ```bash
 npm run test:lab
-npm run quality:test   # broader Lab + quality suite
+npm run quality:test   # broader Command Center + quality suite
 npm run provenance:check
 npm run release:test
 ```
@@ -252,6 +256,6 @@ docs/lab/
 
 ## License
 
-Apache-2.0 for original OpenCode Lab contributions. See
+Apache-2.0 for original OpenCode Command Center contributions. See
 `THIRD_PARTY_NOTICES.md` and `provenance/files.json` for retained upstream
 attributions.

@@ -33,7 +33,11 @@ const tools = [
     name: "github_status",
     description:
       "Read the current workspace branch, GitHub origin, and clean/dirty state. Does not expose credentials.",
-    inputSchema: { type: "object", properties: {}, additionalProperties: false }
+    inputSchema: {
+      type: "object",
+      properties: {},
+      additionalProperties: false
+    }
   },
   {
     name: "github_push",
@@ -46,6 +50,75 @@ const tools = [
           type: "string",
           description: "Branch returned by github_status during review"
         }
+      },
+      additionalProperties: false
+    }
+  },
+  {
+    name: "github_list_pull_requests",
+    description:
+      "List open pull requests for this workspace's GitHub origin. Uses host authentication without exposing credentials.",
+    inputSchema: {
+      type: "object",
+      properties: {},
+      additionalProperties: false
+    }
+  },
+  {
+    name: "github_view_pull_request",
+    description: "Read one pull request from this workspace's GitHub origin.",
+    inputSchema: {
+      type: "object",
+      required: ["number"],
+      properties: { number: { type: "integer", minimum: 1 } },
+      additionalProperties: false
+    }
+  },
+  {
+    name: "github_list_issues",
+    description:
+      "List open issues for this workspace's GitHub origin. Uses host authentication without exposing credentials.",
+    inputSchema: {
+      type: "object",
+      properties: {},
+      additionalProperties: false
+    }
+  },
+  {
+    name: "github_view_issue",
+    description: "Read one issue from this workspace's GitHub origin.",
+    inputSchema: {
+      type: "object",
+      required: ["number"],
+      properties: { number: { type: "integer", minimum: 1 } },
+      additionalProperties: false
+    }
+  },
+  {
+    name: "github_create_issue",
+    description:
+      "Create an issue in this workspace's GitHub origin. Requires explicit approval.",
+    inputSchema: {
+      type: "object",
+      required: ["title"],
+      properties: {
+        title: { type: "string", minLength: 1, maxLength: 200 },
+        body: { type: "string", maxLength: 20000 }
+      },
+      additionalProperties: false
+    }
+  },
+  {
+    name: "github_comment",
+    description:
+      "Comment on an issue or pull request in this workspace's GitHub origin. Requires explicit approval.",
+    inputSchema: {
+      type: "object",
+      required: ["kind", "number", "body"],
+      properties: {
+        kind: { type: "string", enum: ["issue", "pr"] },
+        number: { type: "integer", minimum: 1 },
+        body: { type: "string", minLength: 1, maxLength: 20000 }
       },
       additionalProperties: false
     }
@@ -109,6 +182,21 @@ async function handle(message) {
         value = await call("/github/push", {
           expectedBranch: message.params?.arguments?.expectedBranch
         });
+      else if (name === "github_list_pull_requests")
+        value = await call("/github/pulls");
+      else if (name === "github_view_pull_request")
+        value = await call("/github/pull", message.params?.arguments || {});
+      else if (name === "github_list_issues")
+        value = await call("/github/issues");
+      else if (name === "github_view_issue")
+        value = await call("/github/issue", message.params?.arguments || {});
+      else if (name === "github_create_issue")
+        value = await call(
+          "/github/issue-create",
+          message.params?.arguments || {}
+        );
+      else if (name === "github_comment")
+        value = await call("/github/comment", message.params?.arguments || {});
       else if (name === "github_open_pr")
         value = await call("/github/pr", message.params?.arguments || {});
       else throw new Error(`Unknown tool: ${name}`);

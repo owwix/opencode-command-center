@@ -1,15 +1,20 @@
-# Agent quality in OpenCode Lab
+# Agent quality in OpenCode Command Center
 
-OpenCode Lab is a local, Docker-isolated harness for coding work. It provides
+OpenCode Command Center is a local, Docker-isolated harness for coding work. It provides
 predictable execution boundaries and evidence; it does not promise that an
 agent is correct without verification.
+
+Repository verification also includes `npm run quality:modules`, which keeps
+production modules at or below 700 physical lines. When a change reaches that
+boundary, split by responsibility while preserving the CLI/protocol contract;
+do not increase the budget to avoid the refactor.
 
 ## Start the right session
 
 Run `lab` from anywhere to choose a workspace, or pass one directly:
 
 ```bash
-lab open "$HOME/Projects/example"
+occtl open "$HOME/Projects/example"
 ```
 
 The default launch is the fast coding profile. It starts the gateway and
@@ -26,7 +31,7 @@ in the current session. Quit and relaunch with `lab --with-research` or
 `lab --with-design` first.
 
 The host registry allows one foreground interactive workspace. A second launch
-must explicitly resume the active project or stop its verified Lab launcher.
+must explicitly resume the active project or stop its verified Command Center launcher.
 Background managed runs receive separate launch registrations and Compose
 projects, so they do not replace foreground ownership. Quality maps the
 container path `/workspace` only from the current short-lived registration
@@ -55,14 +60,14 @@ mid-task routing. The sidebar and `/cache-stats` show cost accumulated by the
 fast, lab, and deep lanes.
 
 Use `/workflow` for the command map and `/agents-help` for agent selection.
-Those commands are Lab-wide. Product-specific commands are shown only when a
+Those commands are Command Center-wide. Product-specific commands are shown only when a
 versioned external pack contributes them.
 
 ## Managed work
 
 `/ship`, `/research`, `/review`, `/eval`, and `/parallel` submit bounded work
 through the quality controller. Managed runs use separate Git worktrees and
-persist records under the host-owned Lab state root (on macOS,
+persist records under the host-owned Command Center state root (on macOS,
 `~/Library/Application Support/OpenCode Lab/state/runs`). Verify the resulting
 worktree before adopting changes; parallel runs do not merge themselves.
 
@@ -74,10 +79,10 @@ a retryable queued state until their attempt budget is exhausted. Legacy
 background and fleet JSON records migrate non-destructively the first time the
 service sees them.
 
-Failed work is preserved. Lab retains its isolated worktree and
+Failed work is preserved. Command Center retains its isolated worktree and
 `refs/opencode-lab/runs/<run-id>` recovery ref, and cleanup refuses dirty or
 unpublished changes. Adopt the verified commit or prepare its PR before asking
-Lab to remove the worktree. Archiving changes visibility, not ownership of
+Command Center to remove the worktree. Archiving changes visibility, not ownership of
 unpublished source.
 
 Use `/runs` (or `Ctrl+Shift+R`) as the operator surface. It lists only runs
@@ -102,7 +107,7 @@ Approval-required, blocked, failed, passed, artifact-ready, and PR-ready
 notifications use durable deduplication keys, so reopening the TUI or restarting
 the helper does not emit the same event again. `QUALITY_ARTIFACT_RETENTION_DAYS`
 configures retention. `npm run quality:retention -- --run <id> --days <n>` can
-remove only an expired Lab-owned `artifact-cache` copy; it never removes source
+remove only an expired Command Center-owned `artifact-cache` copy; it never removes source
 worktree artifacts or evidence metadata and refuses all deletion while a run has
 unpublished changes.
 
@@ -139,20 +144,20 @@ Runtime state uses project-scoped named
 `opencode-lab-project_<id>-*` volumes so it survives a restart without sharing
 configuration, caches, sessions, or optional-service state with another
 project. Host-side registry, logs, transient runtime configuration, and approval
-preferences also live outside mounted repositories. Lab uses `.git/info/exclude`
+preferences also live outside mounted repositories. Command Center uses `.git/info/exclude`
 only for unavoidable compatibility paths and never edits a project's
 `.gitignore`.
 Inspect legacy volumes safely with:
 
 ```bash
-lab prune
+occtl prune
 ```
 
-It reports only recognized legacy Lab volume names and ignores unrelated Docker
+It reports only recognized legacy `opencode-lab-*` volume names and ignores unrelated Docker
 volumes. Nothing is deleted unless the exact follow-up command is supplied:
 
 ```bash
-lab prune --apply
+occtl prune --apply
 ```
 
 The command does not stop containers or delete workspaces. If Docker rejects a

@@ -11,6 +11,21 @@ function read(path) {
   return readFileSync(resolve(root, path), "utf8");
 }
 
+function launcherSource() {
+  return [
+    read("scripts/lab/launcher/capability-scope.mjs"),
+    read("scripts/lab/launcher/launch-spec.mjs"),
+    read("scripts/lab/launcher/lease-session.mjs"),
+    read("scripts/lab/launcher/docker-runtime.mjs"),
+    read("scripts/lab/launcher/helper-supervisor.mjs"),
+    read("scripts/lab/launcher/oauth-relay.mjs"),
+    read("scripts/lab/launcher/runtime-config.mjs"),
+    read("scripts/lab/launcher/workspace-ownership.mjs"),
+    read("scripts/lab/launcher/workspace-selection.mjs"),
+    read("scripts/opencode.mjs")
+  ].join("\n");
+}
+
 test("Compose identity is stable and volumes are scoped by project ID", () => {
   const compose = read("docker-compose.opencode.yml");
   assert.match(compose, /^name: opencode-lab$/mu);
@@ -26,13 +41,13 @@ test("Compose identity is stable and volumes are scoped by project ID", () => {
     assert.match(
       compose,
       new RegExp(
-        `^  ${volume}:\\n    name: opencode-lab-\\$\\{OPENCODE_PROJECT_ID:-unscoped\\}-${volume}$`,
+        `^  ${volume}:\\n    name: \\$\\{OPENCODE_VOLUME_${volume.replaceAll("-", "_").toUpperCase()}:-opencode-lab-\\$\\{OPENCODE_STATE_NAMESPACE:-\\$\\{OPENCODE_PROJECT_ID:-unscoped\\}\\}-${volume}\\}$`,
         "mu"
       )
     );
   }
   assert.doesNotMatch(compose, /name: cf-coding-agent/u);
-  const launcher = read("scripts/opencode.mjs");
+  const launcher = launcherSource();
   assert.match(launcher, /opencode-lab-opencode-auth-/u);
   assert.doesNotMatch(launcher, /cf-coding-agent-opencode-preview-1/u);
   assert.match(
@@ -70,14 +85,14 @@ test("preview launch reuses the Lab relay before treating its ports as external"
     "start"
   );
 
-  const launcher = read("scripts/opencode.mjs");
+  const launcher = launcherSource();
   const previewStartup = launcher.slice(
     launcher.indexOf("async function ensureOpencodePreview"),
     launcher.indexOf("function initializeOpenCodeVolumes")
   );
   assert.match(
     previewStartup,
-    /dockerComposeServiceRunning\(\n\s+"opencode-preview",\n\s+environment\n\s+\)/u
+    /dockerComposeServiceRunning\(\n\s+"opencode-preview",\n\s+environment,?\n\s+\)/u
   );
   assert.match(previewStartup, /dockerComposeServiceIdentityMatches/u);
   assert.match(
@@ -107,8 +122,8 @@ test("package manager caches persist without exposing a host directory", () => {
   assert.doesNotMatch(compose, /\$\{HOME\}.*opencode-package-cache/u);
 });
 
-test("warm launcher builds only missing images and does not force rebuild", () => {
-  const launcher = read("scripts/opencode.mjs");
+test("warm launcher builds missing or stale core images and does not force every rebuild", () => {
+  const launcher = launcherSource();
   const normalRun = launcher.slice(
     launcher.lastIndexOf("const child = spawn("),
     launcher.indexOf('child.once("spawn"')
@@ -118,6 +133,11 @@ test("warm launcher builds only missing images and does not force rebuild", () =
   assert.match(normalRun, /"--no-deps"/u);
   assert.match(launcher, /ensureRequestedLocalImages\(childEnvironment\)/u);
   assert.match(launcher, /dockerImageAvailable\(image, environment\)/u);
+  assert.match(
+    launcher,
+    /dockerImageMatchesCurrentBuild\(image, environment\)/u
+  );
+  assert.match(launcher, /Building missing or stale Lab images/u);
   assert.match(launcher, /launcherOptions\.rebuild/u);
   assert.match(launcher, /Rebuilding requested Lab images/u);
   assert.match(
@@ -131,26 +151,28 @@ test("warm launcher builds only missing images and does not force rebuild", () =
 });
 
 test("default coding keeps optional tool stacks off the required path", () => {
-  const launcher = read("scripts/opencode.mjs");
+  const launcher = launcherSource();
   assert.match(
     launcher,
-    /function startOptionalHostServices\(\n\s+workspace,\n\s+childEnvironment,\n\s+browserVerifyToken,\n\s+browserSessionToken\n\)/u
+    /function startOptionalHostServices\(\n\s+workspace,\n\s+childEnvironment,\n\s+browserVerifyToken,\n\s+browserSessionToken,?\n\s*\)/u
   );
   assert.match(launcher, /\.then\(start\)\n\s+\.catch/u);
   assert.match(launcher, /ensureRequestedLocalImages\(childEnvironment\)/u);
   assert.match(launcher, /refreshAgentGateway\(childEnvironment\)/u);
   assert.match(
     launcher,
-    /\[\n\s+"up",\n\s+"-d",\n\s+"--no-build",\n\s+"--wait",\n\s+"--wait-timeout",\n\s+"30",\n\s+"agent-gateway"\n\s+\]/u
+    /\[\n\s+"up",\n\s+"-d",\n\s+"--no-build",\n\s+"--wait",\n\s+"--wait-timeout",\n\s+"30",\n\s+"agent-gateway",?\n\s+\]/u
   );
   assert.match(launcher, /configuredPackRoots\(\{ envFile \}\)/u);
   assert.match(launcher, /materializePackConfig\(\{/u);
   assert.match(launcher, /OPENCODE_CONFIG_DIR_HOST: configDirectory/u);
+  assert.match(launcher, /OPENCODE_CONFIG_IGNORE_HOST: configIgnorePath/u);
+  assert.match(launcher, /function ensureConfigIgnoreFile\(\)/u);
   assert.doesNotMatch(launcher, /OPENCODE_PACK_COMMAND_OVERLAY/u);
   assert.match(launcher, /startRequestedToolServices\(childEnvironment\)/u);
   assert.match(
     launcher,
-    /await Promise\.all\(\[\n\s+initializeOpenCodeVolumes\(childEnvironment\),\n\s+refreshAgentGateway\(childEnvironment\),\n\s+startRequestedToolServices\(childEnvironment\)\n\s+\]\)/u
+    /await Promise\.all\(\[\n\s+initializeOpenCodeVolumes\(childEnvironment\),\n\s+refreshAgentGateway\(childEnvironment\),\n\s+startRequestedToolServices\(childEnvironment\),?\n\s+\]\)/u
   );
   assert.match(
     launcher,
@@ -161,6 +183,10 @@ test("default coding keeps optional tool stacks off the required path", () => {
   assert.match(
     compose,
     /\$\{OPENCODE_CONFIG_DIR_HOST:-\.\/\.opencode\}:\/opencode-config\/\.opencode:ro/u
+  );
+  assert.match(
+    compose,
+    /\$\{OPENCODE_CONFIG_IGNORE_HOST:\?Project-scoped config ignore file is required\}:\/opencode-config\/\.opencode\/\.gitignore:rw/u
   );
   const gateway = compose
     .split("\n  agent-gateway:")[1]
@@ -191,7 +217,7 @@ test("default coding keeps optional tool stacks off the required path", () => {
   assert.match(launcher, /stats\.isFile\(\).*stats\.mtimeMs/su);
 });
 
-test("lab entrypoint exposes lifecycle commands and preserves v0.x aliases", () => {
+test("occtl entrypoint exposes lifecycle commands and preserves v0.x aliases", () => {
   const entry = read("scripts/opencode-entry.mjs");
   for (const command of [
     "open [path]",
@@ -207,11 +233,13 @@ test("lab entrypoint exposes lifecycle commands and preserves v0.x aliases", () 
     assert.match(
       entry,
       new RegExp(
-        `lab ${command.replaceAll("[", "\\[").replaceAll("]", "\\]")}`,
+        `occtl ${command.replaceAll("[", "\\[").replaceAll("]", "\\]")}`,
         "u"
       )
     );
   }
+  assert.match(entry, /opencode-command-center/u);
+  assert.match(entry, /Compatibility aliases:[\s\S]*lab[\s\S]*opencode-lab/u);
   assert.match(entry, /status === null \? runLauncher\(args\) : status/u);
   assert.match(entry, /if \(args\.includes\("--setup"\)\)/u);
   assert.match(entry, /Project contract preview \(\$\{loaded\.source\}\)/u);
@@ -219,15 +247,23 @@ test("lab entrypoint exposes lifecycle commands and preserves v0.x aliases", () 
   assert.match(entry, /Unavailable pack ID/u);
   assert.match(
     entry,
-    /quit and relaunch with \\`lab open --with-research\\` or\n\\`lab open --with-design\\`/u
+    /quit and relaunch with \\`occtl open --with-research\\` or\n\\`occtl open --with-design\\`/u
   );
 });
 
 test("project contracts own pack selection without changing product version", () => {
   const manifest = JSON.parse(read("package.json"));
+  assert.equal(manifest.name, "opencode-command-center");
+  assert.equal(manifest.bin.occtl, "scripts/opencode-entry.mjs");
+  assert.equal(
+    manifest.bin["opencode-command-center"],
+    "scripts/opencode-entry.mjs"
+  );
+  assert.equal(manifest.bin.lab, "scripts/opencode-entry.mjs");
+  assert.equal(manifest.bin["opencode-lab"], "scripts/opencode-entry.mjs");
   assert.equal(manifest.version, "0.0.0-private");
   assert.equal(manifest.labPackApiVersion, "1.0.0");
-  const launcher = read("scripts/opencode.mjs");
+  const launcher = launcherSource();
   assert.match(launcher, /packageManifest\.labPackApiVersion/u);
   assert.match(
     launcher,
@@ -240,7 +276,7 @@ test("project contracts own pack selection without changing product version", ()
 });
 
 test("launch state and credential masks never create project placeholders", () => {
-  const launcher = read("scripts/opencode.mjs");
+  const launcher = launcherSource();
   const compose = read("docker-compose.opencode.yml");
   assert.match(launcher, /const qualityDirectory = hostPaths\.stateRoot/u);
   assert.match(
@@ -276,7 +312,10 @@ test("launch state and credential masks never create project placeholders", () =
     "scripts/lab/background-ship-worker.mjs",
     "scripts/lab/fleet.mjs"
   ]) {
-    const source = read(file);
+    const source =
+      file === "scripts/quality-controller.mjs"
+        ? `${read(file)}\n${read("scripts/quality/controller-runtime.mjs")}`
+        : read(file);
     assert.match(source, /labStateRoot/u);
     assert.doesNotMatch(source, /harnessRoot, ["']\.quality/u);
   }
@@ -292,7 +331,7 @@ test("state init performs recursive ownership repair only for migrations", () =>
   assert.match(init, /OPENCODE_TUI_INIT_VERSION/u);
   assert.match(init, /\.opencode-lab-tui/u);
   assert.match(init, /node \/init\/opencode-tui-merge\.mjs/u);
-  const launcher = read("scripts/opencode.mjs");
+  const launcher = launcherSource();
   assert.doesNotMatch(launcher, /mergeClipboardFriendlyTui/u);
   assert.match(launcher, /async function initializeOpenCodeVolumes/u);
   assert.match(
@@ -316,10 +355,10 @@ test("state init performs recursive ownership repair only for migrations", () =>
 });
 
 test("startup failures clean up launcher-owned helper processes", () => {
-  const launcher = read("scripts/opencode.mjs");
+  const launcher = launcherSource();
   assert.match(
     launcher,
-    /function stopForegroundRelays\(\) \{\n  if \(!isForegroundLaunch\) return;/u
+    /function stopForegroundRelays\(\) \{\n\s+if \(!isForegroundLaunch\) return;/u
   );
   const qualityStart = launcher.slice(
     launcher.indexOf("async function ensureQualityServer"),
@@ -336,7 +375,7 @@ test("startup failures clean up launcher-owned helper processes", () => {
   );
   assert.match(
     startup,
-    /catch \(error\) \{\n    stopForegroundRelays\(\);\n    removeRuntimeConfig\(\);/u
+    /catch \(error\) \{\n    stopForegroundRelays\(\);\n    await stopManagedServices\(childEnvironment\)[\s\S]*removeRuntimeConfig\(\);/u
   );
   assert.match(
     launcher,
@@ -345,7 +384,7 @@ test("startup failures clean up launcher-owned helper processes", () => {
 });
 
 test("loopback relays retain internal auth while validating launch leases", () => {
-  const launcher = read("scripts/opencode.mjs");
+  const launcher = launcherSource();
   assert.match(
     launcher,
     /const githubRelayToken = ensureEnvSecret\("GITHUB_PUBLISH_RELAY_TOKEN"\)/u
@@ -388,8 +427,19 @@ test("loopback relays retain internal auth while validating launch leases", () =
   );
 });
 
+test("launcher health checks use core loopback HTTP instead of Undici", () => {
+  const launcher = launcherSource();
+  const health = read("scripts/lab/loopback-health.mjs");
+  assert.match(launcher, /import \{ loopbackHealth \}/u);
+  assert.doesNotMatch(launcher, /function loopbackHealth\(/u);
+  assert.match(health, /request as httpRequest/u);
+  assert.match(health, /function loopbackHealth\(/u);
+  assert.doesNotMatch(launcher, /await fetch\(`http:\/\/127\.0\.0\.1:/u);
+  assert.match(health, /Health checks must target loopback HTTP/u);
+});
+
 test("workspace ownership uses a launch registry instead of a global pointer", () => {
-  const launcher = read("scripts/opencode.mjs");
+  const launcher = launcherSource();
   const quality = read("scripts/quality-mcp/handler.mjs");
   const compose = read("docker-compose.opencode.yml");
   assert.doesNotMatch(`${launcher}\n${quality}`, /current-workspace\.json/u);
@@ -397,15 +447,12 @@ test("workspace ownership uses a launch registry instead of a global pointer", (
   assert.match(launcher, /claimForegroundWorkspace/u);
   assert.match(launcher, /LAB_FOREGROUND_ACTION/u);
   assert.match(launcher, /registerBackgroundWorkspace/u);
-  assert.match(launcher, /opencode-lab-\$\{launchRunId\.slice\(-12\)\}/u);
+  assert.match(launcher, /composeProjectName = launchSpec.composeProject/u);
   assert.match(
     launcher,
     /const child = spawn\(\n    "docker",\n    dockerComposeArguments\(\[/u
   );
-  assert.match(
-    launcher,
-    /const isForegroundLaunch = !isTask && !isNotionStart && !isMcpAuth/u
-  );
+  assert.match(launcher, /const isForegroundLaunch = launchSpec.foreground/u);
   assert.match(launcher, /if \(!isForegroundLaunch\) return;/u);
   assert.match(launcher, /dockerComposeServiceIdentityMatches/u);
   assert.match(launcher, /Refusing to stop PID/u);

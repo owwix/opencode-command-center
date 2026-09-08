@@ -250,7 +250,7 @@ function QualityDialog(props: {
   return (
     <box width={68} padding={2} gap={1}>
       <text fg={theme.accent}>
-        <b>Lab quality desk</b>
+        <b>Command Center quality desk</b>
       </text>
       <text fg={theme.text}>
         Evidence readiness <b>{result.score}/100</b>
@@ -392,7 +392,7 @@ function openLayoutDialog(api: TuiPluginApi) {
   api.ui.dialog.setSize("medium");
   api.ui.dialog.replace(() =>
     api.ui.DialogSelect<Layout>({
-      title: "Lab workspace layout",
+      title: "Command Center workspace layout",
       current: selectedLayout(api),
       options: [
         {
@@ -492,8 +492,8 @@ const tui: TuiPlugin = async (api) => {
     commands: [
       {
         name: "lab.quality-desk",
-        title: "Lab: quality and verification desk",
-        category: "Lab",
+        title: "Command Center: quality and verification desk",
+        category: "Command Center",
         namespace: "palette",
         slashName: "quality",
         run: () => {
@@ -513,30 +513,30 @@ const tui: TuiPlugin = async (api) => {
       },
       {
         name: "lab.workspace-layout",
-        title: "Lab: choose workspace layout",
-        category: "Lab",
+        title: "Command Center: choose workspace layout",
+        category: "Command Center",
         namespace: "palette",
         slashName: "layout",
         run: () => openLayoutDialog(api)
       },
       {
         name: "lab.permission-approve-safe",
-        title: "Lab: approve safe request once",
-        category: "Lab",
+        title: "Command Center: approve safe request once",
+        category: "Command Center",
         namespace: "palette",
         run: () => answerPermission(api, "once")
       },
       {
         name: "lab.permission-reject",
-        title: "Lab: reject pending request",
-        category: "Lab",
+        title: "Command Center: reject pending request",
+        category: "Command Center",
         namespace: "palette",
         run: () => answerPermission(api, "reject")
       },
       {
         name: "lab.openpets-toggle",
-        title: "Lab: toggle desktop pet reactions",
-        category: "Lab",
+        title: "Command Center: toggle desktop pet reactions",
+        category: "Command Center",
         namespace: "palette",
         slashName: "pet",
         run: () => togglePet(api, cache)
@@ -568,7 +568,7 @@ const tui: TuiPlugin = async (api) => {
   if (api.kv.get<boolean>(hintKey, false) !== true) {
     api.kv.set(hintKey, true);
     api.ui.toast({
-      title: "OpenCode Lab",
+      title: "OpenCode Command Center",
       message: startupMountHint({
         directory: api.state.path.directory,
         workspaceName: process.env.OPENCODE_WORKSPACE_NAME

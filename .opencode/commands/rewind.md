@@ -1,5 +1,5 @@
 ---
-description: Rewind the workspace to a Lab checkpoint id
+description: Rewind the workspace to a Command Center checkpoint id
 ---
 
 $ARGUMENTS

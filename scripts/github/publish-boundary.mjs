@@ -19,11 +19,13 @@ export function defaultPublishRunner(command, args, options = {}) {
       stdio: ["ignore", "pipe", "pipe"]
     }).trim();
   } catch (error) {
-    const stdout = error?.stdout?.toString?.() ?? "";
-    const stderr = error?.stderr?.toString?.() ?? "";
+    const failure =
+      /** @type {Error & { stdout?: unknown, stderr?: unknown }} */ (error);
+    const stdout = failure.stdout?.toString?.() ?? "";
+    const stderr = failure.stderr?.toString?.() ?? "";
     throw new Error(
       redactPublishOutput(
-        stderr || stdout || error?.message || `${command} failed`
+        stderr || stdout || failure.message || `${command} failed`
       )
     );
   }
@@ -78,6 +80,27 @@ function githubRemote(workspace, runner) {
   };
 }
 
+function githubRepository(workspace, runner) {
+  const remote = githubRemote(workspace, runner);
+  return remote.display.replace(/^github\.com\//u, "");
+}
+
+function positiveIssueNumber(value, label = "issue") {
+  const number = Number(value);
+  if (!Number.isInteger(number) || number < 1) {
+    throw new Error(`A positive ${label} number is required.`);
+  }
+  return number;
+}
+
+function boundedText(value, label, { min = 1, max }) {
+  const text = String(value ?? "").trim();
+  if (text.length < min || text.length > max) {
+    throw new Error(`${label} must be ${min}-${max} characters.`);
+  }
+  return text;
+}
+
 export function publishStatus({ workspace, runner = defaultPublishRunner }) {
   const root = realpathSync(workspace);
   const branchName = branch(root, runner);
@@ -105,6 +128,186 @@ export function publishStatus({ workspace, runner = defaultPublishRunner }) {
     dirty: Boolean(porcelain),
     ahead,
     behind
+  };
+}
+
+/**
+ * GitHub operations stay on the trusted host. They are deliberately scoped to
+ * the origin of the selected workspace, so an agent never receives a general
+ * GitHub credential or an arbitrary `gh api` escape hatch.
+ */
+export function listGitHubPullRequests({
+  workspace,
+  runner = defaultPublishRunner
+}) {
+  const root = realpathSync(workspace);
+  const repository = githubRepository(root, runner);
+  const output = runner(
+    "gh",
+    [
+      "pr",
+      "list",
+      "--repo",
+      repository,
+      "--state",
+      "open",
+      "--limit",
+      "100",
+      "--json",
+      "number,title,author,url,headRefName,baseRefName,updatedAt"
+    ],
+    { cwd: root, timeout: 120_000, maxBuffer: 512 * 1024 }
+  );
+  return {
+    repository: `github.com/${repository}`,
+    pullRequests: JSON.parse(output || "[]")
+  };
+}
+
+export function viewGitHubPullRequest({
+  workspace,
+  number,
+  runner = defaultPublishRunner
+}) {
+  const root = realpathSync(workspace);
+  const repository = githubRepository(root, runner);
+  const pullRequest = positiveIssueNumber(number, "pull request");
+  const output = runner(
+    "gh",
+    [
+      "pr",
+      "view",
+      String(pullRequest),
+      "--repo",
+      repository,
+      "--json",
+      "number,title,body,state,url,author,headRefName,baseRefName,comments,reviewDecision"
+    ],
+    { cwd: root, timeout: 120_000, maxBuffer: 1024 * 1024 }
+  );
+  return {
+    repository: `github.com/${repository}`,
+    pullRequest: JSON.parse(output)
+  };
+}
+
+export function listGitHubIssues({ workspace, runner = defaultPublishRunner }) {
+  const root = realpathSync(workspace);
+  const repository = githubRepository(root, runner);
+  const output = runner(
+    "gh",
+    [
+      "issue",
+      "list",
+      "--repo",
+      repository,
+      "--state",
+      "open",
+      "--limit",
+      "100",
+      "--json",
+      "number,title,author,url,labels,updatedAt"
+    ],
+    { cwd: root, timeout: 120_000, maxBuffer: 512 * 1024 }
+  );
+  return {
+    repository: `github.com/${repository}`,
+    issues: JSON.parse(output || "[]")
+  };
+}
+
+export function viewGitHubIssue({
+  workspace,
+  number,
+  runner = defaultPublishRunner
+}) {
+  const root = realpathSync(workspace);
+  const repository = githubRepository(root, runner);
+  const issue = positiveIssueNumber(number);
+  const output = runner(
+    "gh",
+    [
+      "issue",
+      "view",
+      String(issue),
+      "--repo",
+      repository,
+      "--json",
+      "number,title,body,state,url,author,labels,comments"
+    ],
+    { cwd: root, timeout: 120_000, maxBuffer: 1024 * 1024 }
+  );
+  return { repository: `github.com/${repository}`, issue: JSON.parse(output) };
+}
+
+export function createGitHubIssue({
+  workspace,
+  title,
+  body = "",
+  runner = defaultPublishRunner
+}) {
+  const root = realpathSync(workspace);
+  const repository = githubRepository(root, runner);
+  const normalizedTitle = boundedText(title, "Issue title", { max: 200 });
+  const normalizedBody = boundedText(body, "Issue body", {
+    min: 0,
+    max: 20_000
+  });
+  const url = runner(
+    "gh",
+    [
+      "issue",
+      "create",
+      "--repo",
+      repository,
+      "--title",
+      normalizedTitle,
+      "--body",
+      normalizedBody
+    ],
+    { cwd: root, timeout: 120_000, maxBuffer: 128 * 1024 }
+  );
+  return {
+    repository: `github.com/${repository}`,
+    created: true,
+    url: redactPublishOutput(url)
+  };
+}
+
+export function commentOnGitHubThread({
+  workspace,
+  kind,
+  number,
+  body,
+  runner = defaultPublishRunner
+}) {
+  if (!new Set(["issue", "pr"]).has(kind)) {
+    throw new Error("Comment kind must be 'issue' or 'pr'.");
+  }
+  const root = realpathSync(workspace);
+  const repository = githubRepository(root, runner);
+  const thread = positiveIssueNumber(
+    number,
+    kind === "pr" ? "pull request" : "issue"
+  );
+  const normalizedBody = boundedText(body, "Comment body", { max: 20_000 });
+  const url = runner(
+    "gh",
+    [
+      kind,
+      "comment",
+      String(thread),
+      "--repo",
+      repository,
+      "--body",
+      normalizedBody
+    ],
+    { cwd: root, timeout: 120_000, maxBuffer: 128 * 1024 }
+  );
+  return {
+    repository: `github.com/${repository}`,
+    commented: true,
+    url: redactPublishOutput(url)
   };
 }
 

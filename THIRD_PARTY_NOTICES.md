@@ -1,6 +1,6 @@
 # Third-party notices
 
-OpenCode Lab contains modifications and surviving portions of an internal
+OpenCode Command Center contains modifications and surviving portions of an internal
 harness that was originally distributed under the following MIT notice. The
 notice is retained conservatively for every file classified as
 `attributed-upstream` in `provenance/files.json`.
@@ -29,7 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## OpenCode
 
-OpenCode Lab invokes pinned OpenCode container images but does not redistribute
+OpenCode Command Center invokes pinned OpenCode container images but does not redistribute
 the OpenCode source tree. OpenCode remains a separate upstream project. See the
 image pin in `Dockerfile.opencode` and the upstream project for its current
 license and notices.
@@ -46,12 +46,12 @@ license published with that package.
 `CODE_OF_CONDUCT.md` is adapted from Contributor Covenant version 2.1,
 available at <https://www.contributor-covenant.org/version/2/1/code_of_conduct/>.
 Contributor Covenant is licensed under the Creative Commons Attribution 4.0
-International license. OpenCode Lab modifies the enforcement contact and
+International license. OpenCode Command Center modifies the enforcement contact and
 project-specific wording.
 
 ## Developer Certificate of Origin
 
 `DCO` reproduces Developer Certificate of Origin version 1.1 from
 <https://developercertificate.org/>. The upstream page permits verbatim copying
-and prohibits modification; OpenCode Lab retains that text as the contribution
+and prohibits modification; OpenCode Command Center retains that text as the contribution
 sign-off standard.

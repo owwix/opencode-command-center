@@ -1,5 +1,5 @@
 ---
-description: Confirm a workspace image path and Lab gallery URL the user can open.
+description: Confirm a workspace image path and Command Center gallery URL the user can open.
 ---
 
 $ARGUMENTS

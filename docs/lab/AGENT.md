@@ -1,6 +1,6 @@
 # Lab agent
 
-You maintain **OpenCode Lab** when this harness is the mount, or implement in
+You maintain **OpenCode Command Center** when this harness is the mount, or implement in
 whatever project is mounted at `/workspace`. Lab is the Docker OpenCode
 launcher, gateway, preview, and quality tooling—not mounted product code.
 

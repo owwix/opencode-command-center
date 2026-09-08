@@ -26,7 +26,11 @@ test("strict doctor accepts a compatible Apple-silicon Docker Sandbox host", () 
         stderr: ""
       },
       "which sbx": { status: 0, stdout: "/opt/homebrew/bin/sbx\n", stderr: "" },
-      "sbx version": { status: 0, stdout: "sbx version: v0.39.0\n", stderr: "" }
+      "sbx version": {
+        status: 0,
+        stdout: "sbx version: v0.39.0\n",
+        stderr: ""
+      }
     })
   });
   assert.equal(result.ready, true);

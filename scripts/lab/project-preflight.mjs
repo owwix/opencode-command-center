@@ -89,7 +89,7 @@ export function ensureLocalGitExcludes(
   const separator = existing.length > 0 && !existing.endsWith("\n") ? "\n" : "";
   append(
     path,
-    `${separator}# OpenCode Lab host-owned runtime compatibility\n${missing.join("\n")}\n`,
+    `${separator}# OpenCode Command Center host-owned runtime compatibility\n${missing.join("\n")}\n`,
     { mode: 0o600 }
   );
   return { available: true, configured: true, changed: true, path };

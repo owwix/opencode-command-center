@@ -155,7 +155,7 @@ test("fails closed on unsupported versions, traversal, and namespace conflicts",
   try {
     assert.throws(
       () => loadPackSet({ roots: [state.pack], labVersion: "0.9.0" }),
-      /needs OpenCode Lab/u
+      /needs OpenCode Command Center/u
     );
     const manifestPath = join(state.pack, "opencode-lab.pack.json");
     const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));

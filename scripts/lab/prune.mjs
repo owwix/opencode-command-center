@@ -21,7 +21,7 @@ export function prunePlan({ volumeNames, apply = false } = {}) {
     message: volumes.length
       ? apply
         ? `Deleting ${volumes.length} explicitly selected legacy Lab volume(s).`
-        : `No volumes deleted. Re-run with \`lab prune --apply\` to delete exactly these legacy Lab volumes.`
+        : `No volumes deleted. Re-run with \`occtl prune --apply\` to delete exactly these legacy Lab volumes.`
       : "No recognized legacy Lab volumes found. Unrelated Docker volumes are intentionally ignored."
   };
 }
@@ -57,11 +57,11 @@ export function runPrune({
 function main() {
   const args = process.argv.slice(2);
   if (args.some((arg) => !["--apply", "--help", "-h"].includes(arg))) {
-    throw new Error("Usage: lab prune [--apply]");
+    throw new Error("Usage: occtl prune [--apply]");
   }
   if (args.includes("--help") || args.includes("-h")) {
     console.log(
-      "Usage: lab prune [--apply]\n\nReports recognized legacy Lab volumes. It deletes nothing unless --apply is supplied."
+      "Usage: occtl prune [--apply]\n\nReports recognized legacy Lab volumes. It deletes nothing unless --apply is supplied."
     );
     return;
   }

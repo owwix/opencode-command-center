@@ -9,6 +9,16 @@ auto-approve shell execution, credentials, publishing, external directories, or
 hard-denied tools. Change it from the host with
 `lab --approval-mode ask|safe-auto|broad-auto`, never from project code.
 
+## Private GitHub workflow
+
+GitHub authentication remains on the host. The agent can use the scoped
+GitHub tools to inspect the selected workspace's origin, list or view pull
+requests and issues, and—after an explicit approval—push a reviewed branch,
+open a pull request, create an issue, or add a comment. The relay always binds
+the operation to the current workspace origin; it does not expose a GitHub
+token, SSH key, `gh` session, arbitrary GitHub API endpoint, force push, or
+protected-branch write to the agent container.
+
 - Resolve and inspect every exact deletion target inside the confirmed workspace
   before acting. Stop and ask when the target or scope is ambiguous. Never target
   the workspace root, a home directory, or anything outside the workspace.

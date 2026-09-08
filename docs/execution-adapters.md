@@ -1,11 +1,11 @@
 # Execution adapters
 
-OpenCode Lab resolves one versioned execution adapter from the project contract
+OpenCode Command Center resolves one versioned execution adapter from the project contract
 and repository shape. Node, Python, and JavaScript monorepos are supported. The
 adapter owns the pinned verification image, supported executables, install plan,
 and verification plan.
 
-`lab verify [path]` runs that plan locally. Managed runs load the same project
+`occtl verify [path]` runs that plan locally. Managed runs load the same project
 contract and adapter before Dagger verification, so local and isolated results do
 not silently select different commands. Explicit `--verify` commands remain an
 operator override for a single managed run.

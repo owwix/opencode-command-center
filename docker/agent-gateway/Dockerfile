@@ -5,7 +5,18 @@ ENV NODE_ENV=production \
     AGENT_GATEWAY_PORT=8787
 
 WORKDIR /app
-COPY --chown=node:node capability-lease.mjs gateway.mjs server.mjs ./
+LABEL org.opencode-lab.gateway-protocol="renewable-v1"
+COPY --chown=node:node \
+  artifact-network.mjs \
+  capability-lease.mjs \
+  gateway-errors.mjs \
+  gateway-http.mjs \
+  gateway-models.mjs \
+  gateway-routes.mjs \
+  lease-transport.mjs \
+  gateway.mjs \
+  server.mjs \
+  ./
 
 # This service executes only checked-in ESM with the Node runtime. Removing the
 # bundled package manager reduces the production image and prevents npm's

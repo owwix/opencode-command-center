@@ -17,7 +17,7 @@ Requirements:
 - a Cloudflare account/token with Workers AI access for the default models;
 - optional authenticated GitHub CLI for push/PR preparation.
 
-Clone OpenCode Lab and configure it:
+Clone OpenCode Command Center and configure it:
 
 ```bash
 git clone https://github.com/owwix/opencode-lab.git
@@ -34,7 +34,7 @@ CLOUDFLARE_ACCOUNT_ID=<your-account-id>
 CLOUDFLARE_API_TOKEN=<a-scoped-workers-ai-token>
 ```
 
-Do not paste credentials into a project, prompt, tracked file, or issue. Lab
+Do not paste credentials into a project, prompt, tracked file, or issue. Command Center
 generates local gateway/relay secrets when omitted.
 
 Install the global launcher and verify the host:
@@ -42,10 +42,10 @@ Install the global launcher and verify the host:
 ```bash
 npm link
 lab --setup
-lab doctor /path/to/project
+occtl doctor /path/to/project
 ```
 
-`lab doctor` should identify Docker, Node, Git, project runtime/package manager,
+`occtl doctor` should identify Docker, Node, Git, project runtime/package manager,
 verification commands, preview ports, and managed-run eligibility. It does not
 build images.
 
@@ -59,20 +59,20 @@ cd /path/to/project
 git status --short
 ```
 
-If the project is dirty, commit/stash your work before a managed run. Lab will
+If the project is dirty, commit/stash your work before a managed run. Command Center will
 not silently mix existing changes into an isolated implementation.
 
 Preview the detected project contract:
 
 ```bash
-lab init .
+occtl init .
 ```
 
-Lab prints the complete candidate and writes nothing until you type `yes`. To
+Command Center prints the complete candidate and writes nothing until you type `yes`. To
 approve noninteractively after reviewing it:
 
 ```bash
-lab init . --yes
+occtl init . --yes
 ```
 
 The resulting `.opencode-lab/project.json` is safe to commit. Review its
@@ -82,7 +82,7 @@ The resulting `.opencode-lab/project.json` is safe to commit. Review its
 Validate the exact adapter plan:
 
 ```bash
-lab verify .
+occtl verify .
 ```
 
 ## 3. Open the project
@@ -90,7 +90,7 @@ lab verify .
 Start the default coding profile:
 
 ```bash
-lab open .
+occtl open .
 ```
 
 The first launch builds missing core images. Warm launches reuse them. In the
@@ -113,7 +113,7 @@ For an HTTP project, use:
 /preview
 ```
 
-The project server binds inside Lab to `0.0.0.0:3000` or `:3001`. Open only the
+The project server binds inside Command Center to `0.0.0.0:3000` or `:3001`. Open only the
 Mac relay URLs:
 
 ```text
@@ -121,7 +121,7 @@ http://127.0.0.1:3100
 http://127.0.0.1:3101
 ```
 
-Use `/browser` for a smoke check. If `3100`/`3101` are already occupied, Lab
+Use `/browser` for a smoke check. If `3100`/`3101` are already occupied, Command Center
 prints the owning `lsof` command/PID rather than claiming preview succeeded.
 
 Non-HTTP projects report their CLI result and do not invent a browser URL.
@@ -136,7 +136,7 @@ project verification plan, and prepare the result for review. Do not change
 unrelated files.
 ```
 
-Lab creates an isolated worktree and durable run. The implementation agent must
+Command Center creates an isolated worktree and durable run. The implementation agent must
 produce a machine-validated result, after which the controller:
 
 1. commits exactly the declared changed files;
@@ -187,7 +187,7 @@ Inspect the adopted checkout:
 ```bash
 git status --short
 git show --stat --oneline HEAD
-lab verify .
+occtl verify .
 ```
 
 The worktree should be clean and the commit should contain only the declared
@@ -215,10 +215,10 @@ After publication:
 
 - `archive` hides a terminal run without deleting its evidence;
 - `cleanup` removes only work proven safe and refuses dirty/unpublished work;
-- `lab status` shows remaining foreground/background activity;
-- `lab stop` stops the verified foreground launcher.
+- `occtl status` shows remaining foreground/background activity;
+- `occtl stop` stops the verified foreground launcher.
 
-If the host or controller restarts, open Lab and `/runs` again. Startup
+If the host or controller restarts, open Command Center and `/runs` again. Startup
 reconciliation records the interrupted attempt, recovers controller state, and
 retains `refs/opencode-lab/runs/<run-id>` for unpublished Git work.
 
@@ -227,9 +227,9 @@ retains `refs/opencode-lab/runs/<run-id>` for unpublished Git work.
 Relaunch rather than switching tools inside an existing session:
 
 ```bash
-lab open . --with-research
-lab open . --with-design
-lab open . --full-tools
+occtl open . --with-research
+occtl open . --with-design
+occtl open . --full-tools
 ```
 
 Use research only for public-web evidence and design only for a declared design
@@ -237,16 +237,16 @@ workflow. Optional profiles add attack surface and are disabled by default.
 
 ## Troubleshooting
 
-| Symptom                          | Action                                                                                                                         |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `npm` cannot find `package.json` | Run `lab` globally after `npm link`, or use `npm --prefix /path/to/opencode-lab run opencode -- --workspace /path/to/project`. |
-| Node version mismatch            | Run `nvm install` and `nvm use` in the Lab checkout. The launcher also locates the pinned nvm binary directly.                 |
-| Docker image/config mismatch     | Run `lab doctor`; rebuild explicitly with `lab open . --rebuild`.                                                              |
-| Hound/OpenDesign unavailable     | Quit and relaunch with `--with-research` or `--with-design`.                                                                   |
-| Preview cannot bind              | Stop/reconfigure the process printed for `3100`/`3101`, then retry.                                                            |
-| Managed run stops at review      | Inspect `/runs`; a failed or evidence-incomplete run is intentionally not promoted.                                            |
-| Push is unavailable              | Authenticate `gh` on the host and confirm the run requested publication. Do not copy a GitHub token into the container.        |
-| Artifact download denied         | Add the exact public HTTPS hostname to `ARTIFACT_DOWNLOAD_ALLOWLIST`; private/localhost targets remain denied.                 |
+| Symptom                          | Action                                                                                                                           |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `npm` cannot find `package.json` | Run `occtl` globally after `npm link`, or use `npm --prefix /path/to/opencode-lab run opencode -- --workspace /path/to/project`. |
+| Node version mismatch            | Run `nvm install` and `nvm use` in the Command Center checkout. The launcher also locates the pinned nvm binary directly.        |
+| Docker image/config mismatch     | Run `occtl doctor`; rebuild explicitly with `occtl open . --rebuild`.                                                            |
+| Hound/OpenDesign unavailable     | Quit and relaunch with `--with-research` or `--with-design`.                                                                     |
+| Preview cannot bind              | Stop/reconfigure the process printed for `3100`/`3101`, then retry.                                                              |
+| Managed run stops at review      | Inspect `/runs`; a failed or evidence-incomplete run is intentionally not promoted.                                              |
+| Push is unavailable              | Authenticate `gh` on the host and confirm the run requested publication. Do not copy a GitHub token into the container.          |
+| Artifact download denied         | Add the exact public HTTPS hostname to `ARTIFACT_DOWNLOAD_ALLOWLIST`; private/localhost targets remain denied.                   |
 
 For deeper references, see [Architecture](architecture.md),
 [CLI/configuration](cli-reference.md), [Managed runs](managed-runs.md), and

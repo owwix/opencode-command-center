@@ -8,6 +8,10 @@ on:
       - "docker-compose.opencode.yml"
       - "scripts/lab/compatibility.mjs"
       - "test/compatibility/**"
+      - "test/runtime/**"
+      - "scripts/lab/**"
+      - "scripts/quality/**"
+      - "docker/agent-gateway/**"
   push:
     branches: [main]
     paths:
@@ -16,6 +20,10 @@ on:
       - "docker-compose.opencode.yml"
       - "scripts/lab/compatibility.mjs"
       - "test/compatibility/**"
+      - "test/runtime/**"
+      - "scripts/lab/**"
+      - "scripts/quality/**"
+      - "docker/agent-gateway/**"
   schedule:
     - cron: "17 8 * * 2"
   workflow_dispatch:
@@ -41,3 +49,18 @@ jobs:
       - run: npm ci
       - run: npm run compatibility:check
       - run: npm run compatibility:runtime
+
+  deterministic-workflows:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "24.18.0"
+          cache: npm
+      - run: npm ci
+      - run: docker build -f Dockerfile.opencode -t opencode-lab-opencode:local --build-arg OPENCODE_UID=1000 --build-arg OPENCODE_GID=1000 .
+      - run: npm run test:runtime

@@ -348,7 +348,7 @@ export function splitPackRoots(value = process.env.OPENCODE_LAB_PACKS ?? "") {
 }
 
 export function configuredPackRoots({ env = process.env, envFile } = {}) {
-  if (env.OPENCODE_LAB_PACKS?.trim())
+  if (env.OPENCODE_LAB_PACKS !== undefined)
     return splitPackRoots(env.OPENCODE_LAB_PACKS);
   if (!envFile || !existsSync(envFile)) return [];
   const match = readFileSync(envFile, "utf8").match(
@@ -401,7 +401,7 @@ export function loadPackManifest(packRoot, { labVersion = "1.0.0" } = {}) {
   }
   if (!versionAtLeast(labVersion, manifest.minimumLabVersion)) {
     throw new Error(
-      `Pack ${id} needs OpenCode Lab ${manifest.minimumLabVersion} or newer.`
+      `Pack ${id} needs OpenCode Command Center ${manifest.minimumLabVersion} or newer.`
     );
   }
   const resources = (manifest.resources ?? []).map((resource, index) => {

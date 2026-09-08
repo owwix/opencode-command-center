@@ -6,10 +6,19 @@ launch/run capability on every non-health request, checks route/model/action
 policy, injects the corresponding upstream credential, and forwards only to a
 compiled fixed-purpose destination.
 
-This is an internal protocol between Lab-owned components. Projects and packs
+This is an internal protocol between Command Center-owned components. Projects and packs
 cannot register gateway URLs, credentials, or arbitrary routes.
 
 ## Capability lease format
+
+The normal Docker launcher issues a 30-minute lease and renews five minutes
+before expiry while its host process lives. The client holds a per-launch opaque
+transport token; a fixed loopback transport reads the current host-owned lease
+per request. Project processes cannot read the lease directory or signing key.
+Missing or expired leases return 503, not unrestricted fallback authority.
+Existing streams may finish during rotation. The legacy direct signed-lease
+protocol remains available to strict-backend callers; it is not automatically
+renewed by the Docker launcher's transport.
 
 Leases use three base64url segments with an HMAC-SHA256 signature:
 

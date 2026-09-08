@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for improving OpenCode Lab. Small, reviewable changes with executable
+Thank you for improving OpenCode Command Center. Small, reviewable changes with executable
 evidence are easiest to accept.
 
 ## Before opening a pull request

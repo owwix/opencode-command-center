@@ -119,7 +119,7 @@ function commit(
 ) {
   git(workspace, [
     "-c",
-    "user.name=OpenCode Lab Controller",
+    "user.name=OpenCode Command Center Controller",
     "-c",
     "user.email=controller@opencode-lab.local",
     "commit",

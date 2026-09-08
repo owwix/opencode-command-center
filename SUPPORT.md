@@ -1,6 +1,6 @@
 # Support
 
-OpenCode Lab is experimental pre-1.0 software maintained on a best-effort basis.
+OpenCode Command Center is experimental pre-1.0 software maintained on a best-effort basis.
 
 - Use GitHub Discussions for usage questions and design discussion when enabled.
 - Use the issue templates for reproducible bugs and scoped feature requests.

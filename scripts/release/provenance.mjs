@@ -76,7 +76,9 @@ export function buildInventory() {
   const files = releaseFiles().map((file) => {
     const source =
       policy.overrides?.[file] ??
-      (imported.has(file) ? "cloudflare-harness-import" : "opencode-lab");
+      (imported.has(file)
+        ? "cloudflare-harness-import"
+        : "opencode-command-center");
     const sourcePolicy = policy.sources[source];
     if (!sourcePolicy) {
       return {

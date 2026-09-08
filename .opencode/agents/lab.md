@@ -12,7 +12,7 @@ permission:
   "hound_*": deny
 ---
 
-You implement in the **mounted workspace** at `/workspace`. OpenCode Lab is only
+You implement in the **mounted workspace** at `/workspace`. OpenCode Command Center is only
 the harness (Docker, gateway, preview, safety). Product rules live in the
 mounted project—not in Lab agent profiles.
 

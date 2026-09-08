@@ -1,0 +1,2 @@
+# This placeholder permits Docker to layer the project-scoped, writable
+# OpenCode instance ignore file over an otherwise read-only config mount.

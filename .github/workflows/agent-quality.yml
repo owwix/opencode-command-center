@@ -42,6 +42,15 @@ jobs:
       - name: Test quality controller contracts
         run: npm run quality:test
 
+      - name: Type-check critical boundaries
+        run: npm run typecheck
+
+      - name: Enforce production module budget
+        run: npm run quality:modules
+
+      - name: Enforce critical-boundary coverage
+        run: npm run quality:coverage
+
       - name: Test Hound relay contracts
         run: npm run test:hound
 

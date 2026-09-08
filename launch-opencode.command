@@ -7,14 +7,14 @@ cd "$HARNESS_DIR"
 node_version="$(tr -d '[:space:]' < .nvmrc)"
 node_binary="$HOME/.nvm/versions/node/v${node_version#v}/bin/node"
 if [[ ! -x "$node_binary" ]]; then
-  /usr/bin/osascript -e 'display alert "Node 24 unavailable" message "OpenCode Lab could not find the Node version pinned in .nvmrc. Run nvm install in the Lab repository." as warning'
+  /usr/bin/osascript -e 'display alert "Node 24 unavailable" message "OpenCode Command Center could not find the Node version pinned in .nvmrc. Run nvm install in the Command Center repository." as warning'
   exit 1
 fi
 export PATH="${node_binary:h}:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 
 selection=$(/usr/bin/osascript <<'APPLESCRIPT'
 set lineBreak to ASCII character 10
-set action to button returned of (display dialog "OpenCode Lab workspaces" with title "OpenCode Lab" buttons {"Cancel", "Open Existing", "New Project"} default button "Open Existing")
+set action to button returned of (display dialog "OpenCode Command Center workspaces" with title "OpenCode Command Center" buttons {"Cancel", "Open Existing", "New Project"} default button "Open Existing")
 
 if action is "Open Existing" then
   try
@@ -25,9 +25,9 @@ if action is "Open Existing" then
   end try
 else if action is "New Project" then
   try
-    set projectName to text returned of (display dialog "Name for the new project" with title "New OpenCode Lab workspace" default answer "new-project")
+    set projectName to text returned of (display dialog "Name for the new project" with title "New OpenCode Command Center workspace" default answer "new-project")
     set parentFolder to POSIX path of (choose folder with prompt "Choose where to create the project")
-    set initializeGit to button returned of (display dialog "Initialize a Git repository?" with title "New OpenCode Lab workspace" buttons {"No", "Yes"} default button "Yes")
+    set initializeGit to button returned of (display dialog "Initialize a Git repository?" with title "New OpenCode Command Center workspace" buttons {"No", "Yes"} default button "Yes")
     return "new" & lineBreak & parentFolder & lineBreak & projectName & lineBreak & initializeGit
   on error number -128
     return "cancel"

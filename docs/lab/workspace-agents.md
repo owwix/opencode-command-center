@@ -1,6 +1,6 @@
 # Workspace agents (project-local)
 
-OpenCode Lab loads **two** agent sources:
+OpenCode Command Center loads **two** agent sources:
 
 1. **Project** — `/workspace/.opencode/agents/*.md` (cwd is the mounted repo)
 2. **Harness** — `OPENCODE_CONFIG_DIR=/opencode-config/.opencode` (Lab)

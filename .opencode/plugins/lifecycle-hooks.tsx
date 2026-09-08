@@ -5,7 +5,7 @@ import { join } from "node:path";
 
 /**
  * Lightweight lifecycle audit: append session breadcrumbs to a workspace log
- * (hooks-style observability for Lab operators).
+ * (hooks-style observability for Command Center operators).
  */
 const tui: TuiPlugin = async (api) => {
   const root =
@@ -30,8 +30,8 @@ const tui: TuiPlugin = async (api) => {
     commands: [
       {
         name: "lab.hooks-status",
-        title: "Lab: show lifecycle hooks log path",
-        category: "Lab",
+        title: "Command Center: show lifecycle hooks log path",
+        category: "Command Center",
         namespace: "palette",
         slashName: "hooks",
         run: () => {

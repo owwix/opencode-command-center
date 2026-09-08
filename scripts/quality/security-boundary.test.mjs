@@ -193,7 +193,11 @@ test("OpenCode containers are hardened and receive no real gateway secret", () =
     JSON.stringify(config),
     /CLOUDFLARE_(?:ACCOUNT_ID|API_TOKEN)/u
   );
-  const launcher = read("scripts/opencode.mjs");
+  const launcher = [
+    read("scripts/opencode.mjs"),
+    read("scripts/lab/launcher/docker-runtime.mjs"),
+    read("scripts/lab/launcher/helper-supervisor.mjs")
+  ].join("\n");
   assert.match(launcher, /const qualityEnvironment = safeHostEnvironment/u);
   assert.match(launcher, /initializeOpenCodeVolumes\(childEnvironment\)/u);
   assert.match(launcher, /"--use-aliases"/u);
@@ -248,7 +252,7 @@ test("persistent state and runtime config are namespaced by project ID", () => {
     assert.match(
       compose,
       new RegExp(
-        `name: opencode-lab-\\$\\{OPENCODE_PROJECT_ID:-unscoped\\}-${suffix}`,
+        `name: \\$\\{OPENCODE_VOLUME_${suffix.replaceAll("-", "_").toUpperCase()}:-opencode-lab-\\$\\{OPENCODE_STATE_NAMESPACE:-\\$\\{OPENCODE_PROJECT_ID:-unscoped\\}\\}-${suffix}\\}`,
         "u"
       )
     );
@@ -267,7 +271,7 @@ test("OpenCode receives a lease but never gateway signing authority", () => {
   );
   assert.match(
     opencodeService,
-    /AGENT_GATEWAY_TOKEN: \$\{AGENT_CAPABILITY_LEASE:/u
+    /AGENT_GATEWAY_TOKEN: \$\{AGENT_TRANSPORT_TOKEN:/u
   );
   assert.doesNotMatch(opencodeService, /AGENT_GATEWAY_SIGNING_KEY/u);
   assert.match(

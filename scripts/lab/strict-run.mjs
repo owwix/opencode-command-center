@@ -158,7 +158,7 @@ function strictConfig(gatewayUrl) {
     provider: {
       "cloudflare-ai": {
         npm: "@ai-sdk/openai-compatible",
-        name: "OpenCode Lab strict gateway",
+        name: "OpenCode Command Center strict gateway",
         options: {
           baseURL: `${gatewayUrl}/v1`,
           apiKey: "{env:AGENT_GATEWAY_TOKEN}",
@@ -194,7 +194,7 @@ export function launchStrictRun({
 }) {
   const readiness = doctor();
   if (!readiness.ready)
-    throw new Error("Strict backend is not ready. Run `lab strict doctor`.");
+    throw new Error("Strict backend is not ready. Run `occtl strict doctor`.");
   const source = assertSource(workspace, runner);
   const identity = projectIdentity(source);
   const env = parseEnvFile(envFile);

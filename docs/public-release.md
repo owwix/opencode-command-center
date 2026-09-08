@@ -42,7 +42,7 @@ version's file in `docs/release-notes/` before creating the tag.
 Example owner action after all release gates pass:
 
 ```bash
-git tag -s v0.1.0-beta.1 -m "OpenCode Lab v0.1.0-beta.1"
+git tag -s v0.1.0-beta.1 -m "OpenCode Command Center v0.1.0-beta.1"
 git push public v0.1.0-beta.1
 ```
 

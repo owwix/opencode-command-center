@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "rootImportCommit": "802404c1270d52c0ab2d3dd0a408a1b04d6395f0",
   "sources": {
-    "opencode-lab": {
+    "opencode-command-center": {
       "classification": "original",
       "license": "Apache-2.0",
-      "notice": "Copyright 2026 OpenCode Lab contributors"
+      "notice": "Copyright 2026 OpenCode Command Center contributors"
     },
     "cloudflare-harness-import": {
       "classification": "attributed-upstream",
@@ -31,7 +31,7 @@
   "overrides": {
     "CODE_OF_CONDUCT.md": "contributor-covenant-2.1",
     "DCO": "dco-1.1",
-    "LICENSE": "opencode-lab",
+    "LICENSE": "opencode-command-center",
     "package-lock.json": "dependency-lock",
     "quality/inspect/uv.lock": "dependency-lock",
     "docker/hound/build-requirements.lock": "dependency-lock",

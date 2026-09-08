@@ -2,9 +2,9 @@
 
 ## Security objective
 
-OpenCode Lab lets an untrusted coding agent modify one selected project without
+OpenCode Command Center lets an untrusted coding agent modify one selected project without
 giving that project or model general authority over host credentials, other
-projects, private networks, publishing destinations, or Lab policy.
+projects, private networks, publishing destinations, or Command Center policy.
 
 ## Trust boundaries
 
@@ -54,7 +54,7 @@ publication, destructive shell actions, and runaway or abandoned processes.
 
 ## Assumptions
 
-The operator controls the host account, Docker daemon, Lab checkout, enabled
+The operator controls the host account, Docker daemon, Command Center checkout, enabled
 packs, and gateway configuration. Docker Desktop, macOS, model providers,
 GitHub, package registries, pinned upstream images, and the host kernel remain
 external trusted dependencies. A compromised host or Docker daemon is outside

@@ -1,21 +1,26 @@
 {
-  "name": "opencode-lab",
+  "name": "opencode-command-center",
   "version": "0.0.0-private",
   "private": true,
-  "description": "Personal OpenCode Lab harness — Docker-isolated coding TUI with gateway, preview, and managed quality runs",
+  "description": "Independent control plane for isolating, operating, and verifying OpenCode agent workflows",
   "keywords": [
     "agents",
+    "control-plane",
     "docker",
-    "lab",
-    "opencode"
+    "opencode",
+    "sandbox",
+    "verification"
   ],
   "license": "Apache-2.0",
   "bin": {
     "lab": "scripts/opencode-entry.mjs",
+    "occtl": "scripts/opencode-entry.mjs",
+    "opencode-command-center": "scripts/opencode-entry.mjs",
     "opencode-lab": "scripts/opencode-entry.mjs"
   },
   "type": "module",
   "scripts": {
+    "test:runtime": "LAB_RUNTIME_TESTS=1 node --test test/runtime/*.test.mjs",
     "test:hound": "node --test scripts/hound-relay.test.mjs scripts/hound-config.test.mjs",
     "test:opencode-preview": "node --test docker/opencode-preview/server.test.mjs",
     "test:lab": "node --test scripts/lab/*.test.mjs scripts/opencode-tui-merge.test.mjs scripts/opencode-preferences.test.mjs scripts/opencode-routing.test.mjs",
@@ -64,20 +69,23 @@
     "quality:gate": "node scripts/quality-controller.mjs gate",
     "quality:dagger": "node scripts/dagger-quality.mjs",
     "quality:test": "node --test scripts/opencode-routing.test.mjs scripts/opencode-tooling.test.mjs scripts/artifacts/*.test.mjs scripts/quality-lib.test.mjs scripts/quality-mcp/*.test.mjs scripts/quality/*.test.mjs scripts/github/*.test.mjs docker/agent-gateway/*.test.mjs docker/notion-publisher/*.test.mjs scripts/lab/*.test.mjs scripts/opencode-tui-merge.test.mjs scripts/opencode-preferences.test.mjs",
-    "quality:eval:test": "uv run --project quality/inspect python -m unittest discover -s quality/inspect/tests -p 'test_*.py'",
+    "quality:coverage": "node --test --experimental-test-coverage --test-coverage-lines=85 --test-coverage-branches=60 --test-coverage-functions=90 --test-coverage-include=docker/agent-gateway/capability-lease.mjs --test-coverage-include=scripts/github/publish-boundary.mjs --test-coverage-include=scripts/opencode-preferences.mjs --test-coverage-include=scripts/lab/preview-launch-policy.mjs --test-coverage-include=scripts/lab/loopback-health.mjs --test-coverage-include=scripts/release/module-budget.mjs docker/agent-gateway/capability-lease.test.mjs scripts/github/publish-boundary.test.mjs scripts/opencode-preferences.test.mjs scripts/lab/opencode-launcher.test.mjs scripts/lab/loopback-health.test.mjs scripts/release/module-budget.test.mjs",
+    "quality:eval:test": "if command -v uv >/dev/null 2>&1; then uv run --project quality/inspect python -m unittest discover -s quality/inspect/tests -p 'test_*.py'; elif [ -x quality/inspect/.venv/bin/python ]; then quality/inspect/.venv/bin/python -m unittest discover -s quality/inspect/tests -p 'test_*.py'; else python3 -m unittest discover -s quality/inspect/tests -p 'test_*.py'; fi",
     "quality:eval": "uv run --project quality/inspect inspect eval quality/inspect/evals/agent_quality.py --log-dir quality/inspect/logs --max-retries 2 --timeout 120 --time-limit 180 --max-tokens 2000 --max-connections 4 -M responses_api=false -M background=false",
     "quality:eval:trajectory": "uv run --project quality/inspect inspect eval quality/inspect/evals/trajectory_quality.py --log-dir quality/inspect/logs --max-retries 2 --timeout 120 --time-limit 180 --max-tokens 2000 --max-connections 4 -M responses_api=false -M background=false",
     "provenance:generate": "node scripts/release/provenance.mjs generate",
     "provenance:check": "node scripts/release/provenance.mjs check",
     "release:export": "node scripts/release/export-public-tree.mjs",
     "release:test": "node --test scripts/release/*.test.mjs",
+    "quality:modules": "node scripts/release/module-budget.mjs",
     "release:dogfood": "node scripts/release/dogfood.mjs",
     "release:bundle": "node scripts/release/release-artifacts.mjs bundle",
     "release:checksums": "node scripts/release/release-artifacts.mjs checksums",
     "secrets:history": "node scripts/release/scan-history.mjs",
     "format": "oxfmt --write .",
     "lint": "oxlint scripts/ docker/",
-    "check": "oxfmt --check . && npm run test:lab && npm run quality:test"
+    "typecheck": "tsc -p tsconfig.json",
+    "check": "oxfmt --check . && npm run quality:modules && npm run typecheck && npm run test:lab && npm run test:hound && npm run quality:test && npm run quality:coverage"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.29.0",

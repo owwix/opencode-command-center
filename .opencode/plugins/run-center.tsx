@@ -337,8 +337,8 @@ const tui: TuiPlugin = async (api) => {
     commands: [
       {
         name: "lab.run-center",
-        title: "Lab: managed run control center",
-        category: "Lab",
+        title: "Command Center: managed run control center",
+        category: "Command Center",
         namespace: "palette",
         slashName: "runs",
         run: () => void openRunCenter(api)

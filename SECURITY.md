@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-OpenCode Lab is pre-1.0 software. Security fixes are provided only for the most
+OpenCode Command Center is pre-1.0 software. Security fixes are provided only for the most
 recent tagged `0.x` release and the current `main` branch. Older tags, private
 packs, downstream forks, and unpinned local modifications are unsupported.
 

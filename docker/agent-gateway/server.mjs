@@ -1,4 +1,5 @@
 import { createAgentGateway } from "./gateway.mjs";
+import { createLeaseTransport } from "./lease-transport.mjs";
 
 function required(name) {
   const value = process.env[name]?.trim();
@@ -102,11 +103,24 @@ const server = createAgentGateway(
   { capabilities }
 );
 
-server.listen(port, process.env.AGENT_GATEWAY_HOST || "0.0.0.0", () =>
-  console.log(`Agent credential gateway listening on port ${port}`)
+const transportEnabled = Boolean(process.env.AGENT_TRANSPORT_TOKEN);
+const authorityPort = transportEnabled ? port + 1 : port;
+const transport = transportEnabled
+  ? createLeaseTransport({
+      token: required("AGENT_TRANSPORT_TOKEN"),
+      leasePath: "/run/lease/lease.json",
+      upstreamPort: authorityPort
+    })
+  : null;
+server.listen(
+  authorityPort,
+  transportEnabled ? "127.0.0.1" : process.env.AGENT_GATEWAY_HOST || "0.0.0.0",
+  () => console.log(`Agent credential gateway listening on port ${port}`)
 );
+transport?.listen(port, process.env.AGENT_GATEWAY_HOST || "0.0.0.0");
 
 function shutdown() {
+  transport?.close();
   server.close(() => process.exit(0));
 }
 process.on("SIGINT", shutdown);

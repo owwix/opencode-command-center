@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "maxLines": 700,
+  "roots": ["scripts", "docker"],
+  "extensions": [".js", ".mjs", ".ts", ".tsx"],
+  "excludedSuffixes": [".test.js", ".test.mjs", ".test.ts", ".test.tsx"],
+  "excludedDirectories": ["node_modules", "generated", "vendor"]
+}

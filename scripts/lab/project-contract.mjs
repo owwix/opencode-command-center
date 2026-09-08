@@ -57,7 +57,9 @@ const credentialNamePattern =
   /(?:API[_-]?KEY|CREDENTIAL|PASSWORD|PRIVATE[_-]?KEY|SECRET|TOKEN)/iu;
 
 function fail(message) {
-  throw new Error(`Invalid OpenCode Lab project contract: ${message}`);
+  throw new Error(
+    `Invalid OpenCode Command Center project contract: ${message}`
+  );
 }
 
 function assertExactKeys(value, allowed, label) {

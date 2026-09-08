@@ -112,7 +112,7 @@ export function prepareNewWorkspace(
   } = {}
 ) {
   if (!requestedPath)
-    throw new Error("lab new requires a project folder path.");
+    throw new Error("occtl new requires a project folder path.");
   const target = resolve(cwd, requestedPath);
   if (exists(target)) {
     const stats = lstat(target);
@@ -121,7 +121,7 @@ export function prepareNewWorkspace(
     }
     if (list(target).length > 0) {
       throw new Error(
-        `New project target is not empty: ${target}. Use \`lab open\` instead.`
+        `New project target is not empty: ${target}. Use \`occtl open\` instead.`
       );
     }
     return { path: target, created: false };
@@ -177,7 +177,7 @@ export function stopForegroundWorkspace(
   }
   if (!command.includes(resolve(expectedLauncher))) {
     throw new Error(
-      `Refusing to stop PID ${foreground.pid}: it is not the registered OpenCode Lab launcher.`
+      `Refusing to stop PID ${foreground.pid}: it is not the registered OpenCode Command Center launcher.`
     );
   }
 
@@ -192,7 +192,7 @@ export function stopForegroundWorkspace(
   }
   if (alive(foreground.pid)) {
     throw new Error(
-      `OpenCode Lab PID ${foreground.pid} did not stop within ${timeoutMs}ms.`
+      `OpenCode Command Center PID ${foreground.pid} did not stop within ${timeoutMs}ms.`
     );
   }
   reconcileHostRegistry(registryPath, { alive });

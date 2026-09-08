@@ -4,7 +4,15 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
-import { preparePullRequest } from "./publish-boundary.mjs";
+import {
+  commentOnGitHubThread,
+  createGitHubIssue,
+  listGitHubIssues,
+  listGitHubPullRequests,
+  preparePullRequest,
+  viewGitHubIssue,
+  viewGitHubPullRequest
+} from "./publish-boundary.mjs";
 
 function git(root, ...args) {
   return execFileSync("git", ["-C", root, ...args], {
@@ -72,6 +80,88 @@ test("fake GitHub receives the verified commit and PR preparation is idempotent"
     assert.equal(createCalls, 1);
     assert.equal(pushedHead, reviewedHead);
     assert.equal(publishedContent, "verified implementation");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("private GitHub helpers stay scoped to the current origin", () => {
+  const root = mkdtempSync(join(tmpdir(), "github-tools-"));
+  try {
+    git(root, "init", "-q", "-b", "agent/github-tools");
+    git(root, "config", "user.name", "Fixture");
+    git(root, "config", "user.email", "fixture@example.com");
+    writeFileSync(join(root, "README.md"), "fixture\n");
+    git(root, "add", "README.md");
+    git(root, "commit", "-qm", "test: fixture");
+    git(root, "remote", "add", "origin", "https://github.com/owwix/demo.git");
+    const calls = [];
+    const runner = (command, args, options = {}) => {
+      calls.push([command, args]);
+      if (command === "gh" && args[0] === "pr" && args[1] === "list") {
+        return JSON.stringify([{ number: 7, title: "Review me" }]);
+      }
+      if (command === "gh" && args[0] === "pr" && args[1] === "view") {
+        return JSON.stringify({ number: 7, title: "Review me" });
+      }
+      if (command === "gh" && args[0] === "issue" && args[1] === "list") {
+        return JSON.stringify([{ number: 9, title: "Ship it" }]);
+      }
+      if (command === "gh" && args[0] === "issue" && args[1] === "view") {
+        return JSON.stringify({ number: 9, title: "Ship it" });
+      }
+      if (command === "gh" && args[1] === "create") {
+        return "https://github.com/owwix/demo/issues/10";
+      }
+      if (command === "gh" && args[1] === "comment") {
+        return "https://github.com/owwix/demo/issues/9#issuecomment-1";
+      }
+      return execFileSync(command, args, {
+        cwd: options.cwd,
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "pipe"]
+      }).trim();
+    };
+
+    assert.equal(
+      listGitHubPullRequests({ workspace: root, runner }).pullRequests[0]
+        .number,
+      7
+    );
+    assert.equal(
+      viewGitHubPullRequest({ workspace: root, number: 7, runner }).pullRequest
+        .number,
+      7
+    );
+    assert.equal(
+      listGitHubIssues({ workspace: root, runner }).issues[0].number,
+      9
+    );
+    assert.equal(
+      viewGitHubIssue({ workspace: root, number: 9, runner }).issue.number,
+      9
+    );
+    assert.match(
+      createGitHubIssue({ workspace: root, title: "Ship it", runner }).url,
+      /issues\/10$/u
+    );
+    assert.match(
+      commentOnGitHubThread({
+        workspace: root,
+        kind: "issue",
+        number: 9,
+        body: "LGTM",
+        runner
+      }).url,
+      /issuecomment/u
+    );
+
+    for (const [command, args] of calls.filter(
+      ([command]) => command === "gh"
+    )) {
+      assert.equal(command, "gh");
+      assert.equal(args[args.indexOf("--repo") + 1], "owwix/demo");
+    }
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

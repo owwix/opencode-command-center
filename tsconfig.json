@@ -3,11 +3,28 @@
     "target": "ES2024",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    "allowJs": true,
+    "checkJs": true,
     "strict": true,
+    "noImplicitAny": false,
     "noEmit": true,
     "types": ["node"],
     "skipLibCheck": true
   },
-  "include": ["scripts/**/*.mjs", "docker/**/*.mjs"],
-  "exclude": ["node_modules", ".quality"]
+  "include": [
+    "docker/agent-gateway/capability-lease.mjs",
+    "docker/agent-gateway/gateway-errors.mjs",
+    "scripts/github/publish-boundary.mjs",
+    "scripts/lab/launcher/oauth-relay.mjs",
+    "scripts/lab/launcher/launch-spec.mjs",
+    "scripts/lab/launcher/lease-session.mjs",
+    "docker/agent-gateway/lease-transport.mjs",
+    "scripts/quality/controller-ports.mjs",
+    "scripts/quality/runtime-contracts.d.ts",
+    "scripts/lab/loopback-health.mjs",
+    "scripts/lab/preview-launch-policy.mjs",
+    "scripts/opencode-preferences.mjs",
+    "scripts/release/module-budget.mjs"
+  ],
+  "exclude": ["node_modules", ".quality", "**/*.test.mjs"]
 }

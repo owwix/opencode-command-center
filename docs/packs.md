@@ -1,6 +1,6 @@
 # External workflow packs
 
-OpenCode Lab core is product-neutral. Private or public packs can add agents,
+OpenCode Command Center core is product-neutral. Private or public packs can add agents,
 commands, skills, themes, managed-run kinds, and quality contracts without
 editing the harness.
 

@@ -139,8 +139,8 @@ const tui: TuiPlugin = async (api) => {
     commands: [
       {
         name: "lab.cache-stats",
-        title: "Lab: usage and cache stats",
-        category: "Lab",
+        title: "Command Center: usage and cache stats",
+        category: "Command Center",
         namespace: "palette",
         slashName: "cache-stats",
         run: () => {

@@ -1,6 +1,9 @@
 # Architecture
 
-OpenCode Lab is a host-controlled harness around an untrusted coding-agent
+For the current execution-ownership, renewable-capability, volume-recovery and
+controller-projection boundaries, see [reliability implementation and evidence](reliability-implementation.md).
+
+OpenCode Command Center is a host-controlled harness around an untrusted coding-agent
 process. The host launcher selects one project, creates project-scoped state
 and short-lived authority, then starts a Docker-isolated OpenCode TUI. The
 agent can edit the selected workspace but does not receive provider,
@@ -55,7 +58,7 @@ only into the process that owns the corresponding upstream route.
 
 ## Launch sequence
 
-1. `lab open [path]` resolves the canonical path and stable project ID.
+1. `occtl open [path]` resolves the canonical path and stable project ID.
 2. The launcher validates Node, Docker, Git, project contract, configured packs,
    preview ports, and managed-run eligibility.
 3. It enforces one foreground interactive workspace. Background managed runs do
@@ -71,6 +74,21 @@ only into the process that owns the corresponding upstream route.
    fixed-purpose relays.
 10. The launcher unregisters the exact foreground launch on clean exit and
     leaves project-scoped persistent state available for resume.
+
+## Internal module boundaries
+
+Entrypoints coordinate policy but do not own every implementation detail.
+`scripts/opencode.mjs` composes focused launcher modules for workspace
+selection/ownership, runtime configuration, capability scope, Docker, host
+helpers, and OAuth. `scripts/quality-controller.mjs` composes separate runtime,
+prepare, implementation, lifecycle, artifact/release, and process-control
+modules. The Quality MCP separates run operations from transport dispatch, and
+the gateway separates models, routes, HTTP controls, and artifact networking.
+
+CI enforces a 700-physical-line maximum for production JavaScript/TypeScript.
+The limit is stored in `quality/module-budget.json`; it applies to coordinators
+and implementation modules alike so a refactor cannot merely move an oversized
+module behind a new filename.
 
 ## Network data flow
 
@@ -101,13 +119,13 @@ claim reference.
 
 Runtime files are host-owned and are not written into selected repositories.
 
-| State                                | macOS default                                        | Notes                                                                            |
-| ------------------------------------ | ---------------------------------------------------- | -------------------------------------------------------------------------------- |
-| Lab state                            | `~/Library/Application Support/OpenCode Lab/state`   | project registry, project state, runs, releases, updates                         |
-| Lab config                           | `~/Library/Application Support/OpenCode Lab/config`  | preferences and host-owned approval selection                                    |
-| Backups                              | `~/Library/Application Support/OpenCode Lab/backups` | update/rollback state backups                                                    |
-| Project-local compatibility excludes | `<repo>/.git/info/exclude`                           | ignores unavoidable local runtime paths without editing `.gitignore`             |
-| Docker volumes                       | `opencode-lab-<project-id>-*`                        | sessions, cache, runtime config, and optional-service state scoped by project ID |
+| State                                         | macOS default                                        | Notes                                                                            |
+| --------------------------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Command Center state (legacy v0.x namespace)  | `~/Library/Application Support/OpenCode Lab/state`   | project registry, project state, runs, releases, updates                         |
+| Command Center config (legacy v0.x namespace) | `~/Library/Application Support/OpenCode Lab/config`  | preferences and host-owned approval selection                                    |
+| Backups                                       | `~/Library/Application Support/OpenCode Lab/backups` | update/rollback state backups                                                    |
+| Project-local compatibility excludes          | `<repo>/.git/info/exclude`                           | ignores unavoidable local runtime paths without editing `.gitignore`             |
+| Docker volumes                                | `opencode-lab-<project-id>-*`                        | sessions, cache, runtime config, and optional-service state scoped by project ID |
 
 On non-macOS systems the defaults follow XDG state/config directories.
 `OPENCODE_LAB_STATE_ROOT` and `OPENCODE_LAB_CONFIG_ROOT` may override them with
@@ -122,7 +140,7 @@ Configuration has three layers, from least to most trusted:
    `.opencode-lab/project.json`; bounded install, verify, development, preview,
    artifact, risk, and pack metadata. It cannot grant authority.
 2. **Project-local OpenCode resources** — `.opencode` agents/skills used inside
-   the selected repository and still subject to Lab policy.
+   the selected repository and still subject to Command Center policy.
 3. **Host configuration and packs** — ignored `opencode.env`, approval
    preferences, credentials, and operator-approved pack roots.
 
@@ -150,13 +168,13 @@ See [Managed runs](managed-runs.md) for states and operator actions.
 
 ## Update and strict-execution boundaries
 
-`lab update` stages candidate images and code, runs compatibility checks, backs
-up state, and activates an atomic release pointer. `lab rollback` restores the
+`occtl update` stages candidate images and code, runs compatibility checks, backs
+up state, and activates an atomic release pointer. `occtl rollback` restores the
 previous staged release; it does not rewrite a selected project.
 
 `lab --strict` uses Docker Sandboxes as a separate clone-isolated backend. The
 host checkout is not mounted read/write. Results cross back only as a signed,
-bounded export and require explicit `lab strict adopt ... --approve`. See
+bounded export and require explicit `occtl strict adopt ... --approve`. See
 [Compatibility](compatibility.md) and [Strict mode](strict-mode.md).
 
 ## Extension points

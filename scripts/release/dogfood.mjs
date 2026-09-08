@@ -35,6 +35,8 @@ export function dogfoodRepositories(
     };
   });
   return {
+    scope: "preflight-only",
+    workflowValidated: false,
     passed: reports.every(
       (report) => report.healthy && (!requireManaged || report.managedEligible)
     ),

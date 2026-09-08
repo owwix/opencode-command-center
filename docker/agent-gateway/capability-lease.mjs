@@ -66,6 +66,7 @@ function signature(key, signingInput) {
   return createHmac("sha256", key).update(signingInput).digest("base64url");
 }
 
+/** @param {{ key: string, workspaceHash: string, projectId: string, sessionId: string, runId?: string | null, routes: string[], actions: string[], now?: number, ttlSeconds?: number }} options */
 export function createCapabilityLease({
   key,
   workspaceHash,

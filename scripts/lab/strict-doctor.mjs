@@ -113,7 +113,7 @@ export function strictDoctor({
 
 export function formatStrictDoctor(result) {
   return [
-    "OpenCode Lab strict-mode doctor",
+    "OpenCode Command Center strict-mode doctor",
     ...result.checks.map(
       ({ passed, summary, detail }) =>
         `${passed ? "PASS" : "FAIL"} ${summary}${!passed && detail ? `\n     ${detail}` : ""}`

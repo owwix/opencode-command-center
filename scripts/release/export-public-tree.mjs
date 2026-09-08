@@ -98,7 +98,7 @@ export function exportPublicTree(destination, { initialize = false } = {}) {
     run("git", ["init", "-b", "main"], resolvedDestination);
     run(
       "git",
-      ["config", "user.name", "OpenCode Lab Release"],
+      ["config", "user.name", "OpenCode Command Center Release"],
       resolvedDestination
     );
     run(
@@ -111,7 +111,7 @@ export function exportPublicTree(destination, { initialize = false } = {}) {
     run("git", ["add", "--force", "--all"], resolvedDestination);
     run(
       "git",
-      ["commit", "-m", "feat: publish OpenCode Lab core"],
+      ["commit", "-m", "feat: publish OpenCode Command Center core"],
       resolvedDestination
     );
     const count = run(

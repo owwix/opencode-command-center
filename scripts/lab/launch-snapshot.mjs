@@ -281,7 +281,7 @@ export function snapshotLines(snapshot) {
   }
   if (snapshot.volumes.legacy.length) {
     lines.push(
-      `Legacy Lab volumes: ${snapshot.volumes.legacy.join(", ")}. Inspect with \`lab prune\`; deletion requires \`lab prune --apply\`.`
+      `Legacy Lab volumes: ${snapshot.volumes.legacy.join(", ")}. Inspect with \`occtl prune\`; deletion requires \`occtl prune --apply\`.`
     );
   }
   return lines;

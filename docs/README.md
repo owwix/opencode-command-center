@@ -1,6 +1,6 @@
-# OpenCode Lab documentation
+# OpenCode Command Center documentation
 
-This directory documents the public, product-neutral OpenCode Lab core. Start
+This directory documents the public, product-neutral OpenCode Command Center core. Start
 with the quick start in the repository [`README.md`](../README.md), then use
 this page as the documentation index.
 
@@ -10,7 +10,7 @@ this page as the documentation index.
    state ownership, and extension points.
 2. [Codebase reference](code-reference.md) — entrypoints, lifecycle modules,
    managed-run internals, relays, schemas, and release code.
-3. [First project tutorial](tutorial.md) — install Lab, open a project, run a
+3. [First project tutorial](tutorial.md) — install Command Center, open a project, run a
    verified change, inspect evidence, and prepare a pull request.
 4. [CLI and configuration reference](cli-reference.md) — lifecycle commands,
    profiles, approval modes, slash commands, environment variables, and exit
@@ -20,7 +20,7 @@ this page as the documentation index.
 6. [External workflow packs](packs.md) — versioned agents, commands, services,
    models, contracts, and artifacts.
 
-## Operate and extend Lab
+## Operate and extend Command Center
 
 - [Managed runs](managed-runs.md) — state machine, isolation, verification,
   review, evidence, adoption, recovery, retention, and `/runs` operations.

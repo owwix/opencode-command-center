@@ -427,7 +427,7 @@ export function adoptStrictRun({
       source,
       [
         "-c",
-        "user.name=OpenCode Lab Controller",
+        "user.name=OpenCode Command Center Controller",
         "-c",
         "user.email=controller@opencode-lab.invalid",
         "commit",
@@ -488,7 +488,7 @@ export function adoptStrictRun({
 }
 
 function usage() {
-  return "Usage: lab strict export <run> | lab strict adopt <run> --approve";
+  return "Usage: occtl strict export <run> | occtl strict adopt <run> --approve";
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

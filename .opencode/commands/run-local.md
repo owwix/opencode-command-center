@@ -15,7 +15,7 @@ The user wants the mounted project running locally so they can open it on their 
 4. Prefer `docker compose up -d --build` from `/workspace` when a compose file
    exists and maps `127.0.0.1:3100` / `127.0.0.1:3101` and the mount is an HTTP app.
 5. Otherwise, for HTTP apps only, bind to `0.0.0.0:3000` / `0.0.0.0:3001` and
-   rely on the Lab preview relay.
+   rely on the Command Center preview relay.
 6. For HTTP preview apps, run `node /opencode-config/scripts/local-preview/check.mjs`
    and reply with Mac URLs (`http://127.0.0.1:3100` and/or `3101`).
 7. For non-HTTP projects, report the CLI outcome instead of inventing preview URLs.

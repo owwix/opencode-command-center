@@ -1,20 +1,20 @@
 # Codebase reference
 
-This reference maps public behavior to its implementation. OpenCode Lab is an
+This reference maps public behavior to its implementation. OpenCode Command Center is an
 executable application rather than a stable JavaScript library: modules are
 internal unless a schema, CLI, protocol, or pack contract explicitly marks the
 surface as versioned.
 
 ## Entrypoints
 
-| File                                 | Responsibility                                                                                                                        |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `scripts/opencode-entry.mjs`         | `lab`/`opencode-lab` CLI, pinned Node bootstrap, lifecycle dispatch, project-contract approval, update/rollback, strict-mode dispatch |
-| `scripts/opencode.mjs`               | canonical workspace launch, preflight, foreground ownership, profile selection, leases, helpers, Compose orchestration, exact cleanup |
-| `scripts/quality-controller.mjs`     | managed-run state machine, controller commit, verification, review, evidence, adoption, PR receipts, controller CLI                   |
-| `scripts/managed-task.mjs`           | generic `/ship` and `/research` managed-task dispatch                                                                                 |
-| `docker/agent-gateway/server.mjs`    | validate required gateway configuration and start the fixed-purpose gateway                                                           |
-| `docker/notion-publisher/server.mjs` | restricted Notion create-content sidecar                                                                                              |
+| File                                 | Responsibility                                                                                                                                                           |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `scripts/opencode-entry.mjs`         | `occtl` CLI plus `lab`/`opencode-lab` compatibility aliases, pinned Node bootstrap, lifecycle dispatch, project-contract approval, update/rollback, strict-mode dispatch |
+| `scripts/opencode.mjs`               | thin launch coordinator: project preflight, launch identity, capability lease, child environment, and exact cleanup                                                      |
+| `scripts/quality-controller.mjs`     | thin managed-run CLI that composes runtime, implementation, lifecycle, artifact, process, and operator-command modules                                                   |
+| `scripts/managed-task.mjs`           | generic `/ship` and `/research` managed-task dispatch                                                                                                                    |
+| `docker/agent-gateway/server.mjs`    | validate required gateway configuration and start the fixed-purpose gateway                                                                                              |
+| `docker/notion-publisher/server.mjs` | restricted Notion create-content sidecar                                                                                                                                 |
 
 ## Host lifecycle modules
 
@@ -37,6 +37,7 @@ surface as versioned.
 | `scripts/lab/strict-doctor.mjs`      | Read-only Docker Sandbox backend prerequisites.                                                                                   |
 | `scripts/lab/strict-run.mjs`         | Clean-clone sandbox creation and chat-only strict lease.                                                                          |
 | `scripts/lab/strict-export.mjs`      | Signed bounded export and explicit exact-base adoption.                                                                           |
+| `scripts/lab/launcher/*.mjs`         | Workspace selection/ownership, runtime config, capability scope, Docker orchestration, helper supervision, and OAuth relay.       |
 
 Lifecycle modules must not read project-controlled approval state or expose
 host registry/configuration paths to the container.
@@ -45,7 +46,14 @@ host registry/configuration paths to the container.
 
 | Module                                          | Contract                                                                                                               |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `scripts/quality/run-service.mjs`               | Durable schema migration, attempts, heartbeat reconciliation, recovery refs, external-action receipts, cleanup safety. |
+| `scripts/quality/run-service-core.mjs`          | Durable records, locks, migrations, attempts, heartbeats, recovery refs, and external-action receipts.                 |
+| `scripts/quality/run-service.mjs`               | Legacy migration, startup reconciliation, archival, and cleanup safety over the durable core.                          |
+| `scripts/quality/controller-runtime.mjs`        | Atomic state, Git/process wrappers, budgets, leases, persistence, transitions, tracing, and notifications.             |
+| `scripts/quality/controller-prepare.mjs`        | Project policy, route preflight, isolated worktree creation, context, memory, and idempotent preparation.              |
+| `scripts/quality/controller-implementation.mjs` | Bounded agent/reviewer execution, telemetry, Dagger verification, refresh, and controller-owned implementation commit. |
+| `scripts/quality/controller-lifecycle.mjs`      | Verification, independent review, risk evidence, and end-to-end execution phases.                                      |
+| `scripts/quality/controller-artifacts.mjs`      | Artifact validation, release gate, finalization, adoption, and exact-SHA PR preparation.                               |
+| `scripts/quality/controller-process.mjs`        | Resume, cancellation, process-group termination, archive, and safe cleanup.                                            |
 | `scripts/quality/run-control.mjs`               | Exact result/review parsing, phase limits, telemetry accounting, bounded process execution/termination.                |
 | `scripts/quality/implementation-checkpoint.mjs` | Stage and commit only declared safe changes; bind evidence to content SHA.                                             |
 | `scripts/quality/durable-state.mjs`             | Redacted trace, chained checkpoints, queue, approvals, and bounded workspace memory.                                   |
@@ -56,7 +64,8 @@ host registry/configuration paths to the container.
 | `scripts/quality/run-notifications.mjs`         | Deduplicated project-scoped operator events.                                                                           |
 | `scripts/quality/run-outcomes.mjs`              | Immutable outcome and operational metric records.                                                                      |
 | `scripts/quality/run-view.mjs`                  | Evidence-linked operator view and state-aware allowed actions.                                                         |
-| `scripts/quality-mcp/handler.mjs`               | Authenticated project-scoped `/runs`, notification, artifact, and action API.                                          |
+| `scripts/quality-mcp/run-operations.mjs`        | Registered run lookup, managed/parallel starts, status views, and state-valid operator actions.                        |
+| `scripts/quality-mcp/handler.mjs`               | Authenticated project-scoped MCP and `/runs`, notification, artifact, and action protocol.                             |
 | `scripts/quality-lib.mjs`                       | Shared state transitions, IDs, routing, requirement inference, and release/risk gates.                                 |
 | `scripts/dagger-quality.mjs`                    | Deterministic containerized verification boundary.                                                                     |
 
@@ -67,16 +76,20 @@ evidence.
 
 ## Gateway and relays
 
-| Module                                      | Contract                                                                                                         |
-| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `docker/agent-gateway/capability-lease.mjs` | Create/verify HMAC leases bound to workspace/project/session/run and route/action scope.                         |
-| `docker/agent-gateway/gateway.mjs`          | Fixed route/model/method policy, credential injection, provider compatibility, concurrency, safe artifact fetch. |
-| `scripts/hound-relay.mjs`                   | Passive, bounded public-web MCP surface and filtered Hound upstream.                                             |
-| `scripts/github/publish-relay.mjs`          | Fixed GitHub status/push/PR operations using host authentication and current lease.                              |
-| `scripts/local-preview/*`                   | Fixed loopback preview readiness and ownership checks.                                                           |
-| `scripts/lab/browser-*-relay.mjs`           | Authenticated loopback browser verification/session actions.                                                     |
-| `scripts/openpets-relay.mjs`                | Fixed reaction enum only.                                                                                        |
-| `docker/notion-publisher/*`                 | Fixed target map and insert-content-only publication.                                                            |
+| Module                                      | Contract                                                                                           |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `docker/agent-gateway/capability-lease.mjs` | Create/verify HMAC leases bound to workspace/project/session/run and route/action scope.           |
+| `docker/agent-gateway/gateway.mjs`          | Request coordinator, credential injection, provider dispatch, and artifact staging.                |
+| `docker/agent-gateway/gateway-models.mjs`   | Model registry normalization, provider payload compatibility, fallback, and Vertex token handling. |
+| `docker/agent-gateway/gateway-routes.mjs`   | Fixed route definitions and route/action capability requirements.                                  |
+| `docker/agent-gateway/gateway-http.mjs`     | Request bounds, headers, rate/concurrency limits, streaming, and error responses.                  |
+| `docker/agent-gateway/artifact-network.mjs` | DNS/private-network policy and pinned HTTPS requests for bounded artifact downloads.               |
+| `scripts/hound-relay.mjs`                   | Passive, bounded public-web MCP surface and filtered Hound upstream.                               |
+| `scripts/github/publish-relay.mjs`          | Fixed GitHub status/push/PR operations using host authentication and current lease.                |
+| `scripts/local-preview/*`                   | Fixed loopback preview readiness and ownership checks.                                             |
+| `scripts/lab/browser-*-relay.mjs`           | Authenticated loopback browser verification/session actions.                                       |
+| `scripts/openpets-relay.mjs`                | Fixed reaction enum only.                                                                          |
+| `docker/notion-publisher/*`                 | Fixed target map and insert-content-only publication.                                              |
 
 Normative routes and claims are in
 [Gateway and capability protocol](gateway-protocol.md). A relay must not become
@@ -123,6 +136,7 @@ exists.
 | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | `scripts/release/provenance.mjs`         | Classify/hash every public release file.                                                                             |
 | `scripts/release/export-public-tree.mjs` | Copy only classified files into a fresh clean-root export.                                                           |
+| `scripts/release/module-budget.mjs`      | Enforce the 700-physical-line production-module ceiling from `quality/module-budget.json`.                           |
 | `scripts/release/scan-history.mjs`       | Run Gitleaks and TruffleHog over every reachable ref tip.                                                            |
 | `scripts/release/release-artifacts.mjs`  | Build release bundle/checksums.                                                                                      |
 | `scripts/release/dogfood.mjs`            | Enforce distinct healthy dogfood repositories.                                                                       |

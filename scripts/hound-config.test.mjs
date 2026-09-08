@@ -22,7 +22,10 @@ const houndBuildLock = readFileSync(
 const houndLock = readFileSync("docker/hound/requirements.lock", "utf8");
 const relayDockerfile = readFileSync("docker/hound-relay/Dockerfile", "utf8");
 const config = JSON.parse(readFileSync("opencode.json", "utf8"));
-const launcher = readFileSync("scripts/opencode.mjs", "utf8");
+const launcher = [
+  readFileSync("scripts/opencode.mjs", "utf8"),
+  readFileSync("scripts/lab/launcher/docker-runtime.mjs", "utf8")
+].join("\n");
 const researchAgent = readFileSync(".opencode/agents/research.md", "utf8");
 const reviewerAgent = readFileSync(".opencode/agents/reviewer.md", "utf8");
 

@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a reproducible OpenCode Lab defect
+description: Report a reproducible OpenCode Command Center defect
 title: "bug: "
 labels: [bug]
 body:

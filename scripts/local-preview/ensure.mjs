@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Host-side: ensure the opencode-preview relay is up for Lab app ports.
- * Run from the OpenCode Lab checkout on the Mac, not from inside the agent container.
+ * Run from the OpenCode Command Center checkout on the Mac, not from inside the agent container.
  * If 3100/3101 are already published by a workspace compose stack, leave them.
  */
 import { spawnSync } from "node:child_process";

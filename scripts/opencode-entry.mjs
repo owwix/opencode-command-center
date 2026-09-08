@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Public `lab` lifecycle entrypoint.
+ * Public `occtl` lifecycle entrypoint.
  *
  * This host-owned command selects lifecycle, update, and strict operations,
  * bootstraps the pinned Node runtime independently of the ambient shell, and
@@ -76,7 +76,7 @@ if (process.versions.node !== requiredNodeVersion) {
   );
   if (!existsSync(pinnedNode)) {
     console.error(
-      `OpenCode Lab requires Node ${requiredNodeVersion}. Install it with nvm before launching.`
+      `OpenCode Command Center requires Node ${requiredNodeVersion}. Install it with nvm before launching.`
     );
     process.exit(1);
   }
@@ -89,31 +89,35 @@ if (process.versions.node !== requiredNodeVersion) {
 }
 
 if (args.includes("--help") || args.includes("-h")) {
-  console.log(`OpenCode Lab launcher
+  console.log(`OpenCode Command Center launcher
 
 Usage:
-  lab open [path]                           Choose or open a workspace
-  lab new [path]                            Create an empty workspace, then open it
-  lab recent                                List known projects by last-opened time
-  lab status                                Show foreground and background activity
-  lab stop                                  Stop the verified foreground launcher
-  lab resume [project]                      Reopen a recent project by index/name/path
-  lab init [path] [--pack id] [--yes]       Preview, approve, and write project.json
-  lab doctor [path]                         Diagnose Lab and a project preflight
-  lab verify [path]                         Run the project adapter verification plan
-  lab prune [--apply]                       Report legacy volumes; delete with --apply
-  lab version                               Show source, compatibility, and active release
-  lab update [--ref REF]                    Stage, verify, back up, and activate an update
-  lab rollback                              Return to the previous staged release
-  lab strict doctor [--json]                Check strict microVM prerequisites
-  lab strict run [path]                     Start a clone-isolated strict session
-  lab strict export <run>                   Export a signed strict result bundle
-  lab strict adopt <run> --approve          Explicitly adopt a verified strict patch
-  lab open [path] --strict                  Alias for strict clone execution
+  occtl open [path]                           Choose or open a workspace
+  occtl new [path]                            Create an empty workspace, then open it
+  occtl recent                                List known projects by last-opened time
+  occtl status                                Show foreground and background activity
+  occtl stop                                  Stop the verified foreground launcher
+  occtl resume [project]                      Reopen a recent project by index/name/path
+  occtl init [path] [--pack id] [--yes]       Preview, approve, and write project.json
+  occtl doctor [path]                         Diagnose Command Center and project preflight
+  occtl verify [path]                         Run the project adapter verification plan
+  occtl prune [--apply]                       Report legacy volumes; delete with --apply
+  occtl version                               Show source, compatibility, and active release
+  occtl update [--ref REF]                    Stage, verify, back up, and activate an update
+  occtl rollback                              Return to the previous staged release
+  occtl strict doctor [--json]                Check strict microVM prerequisites
+  occtl strict run [path]                     Start a clone-isolated strict session
+  occtl strict export <run>                   Export a signed strict result bundle
+  occtl strict adopt <run> --approve          Explicitly adopt a verified strict patch
+  occtl open [path] --strict                  Alias for strict clone execution
 
-Existing v0.x aliases:
-  opencode-lab                              Alias for \`lab open\`
-  opencode-lab --workspace <folder>         Alias for \`lab open <folder>\`
+Canonical package alias:
+  opencode-command-center                   Alias for \`occtl open\`
+
+Compatibility aliases:
+  lab                                       Alias for \`occtl open\`
+  opencode-lab                              Alias for \`occtl open\`
+  opencode-lab --workspace <folder>         Alias for \`occtl open <folder>\`
   opencode-lab task <type> <request>        Run a managed task
   opencode-lab --setup                      Check or create local configuration
 
@@ -134,16 +138,16 @@ Approval modes (host-owned; project code cannot modify them):
 The default interactive launch uses the fast coding profile: optional tool
 containers and MCP clients stay disabled. Missing selected images are still
 built automatically once. Tab-switching agents does not activate a tool stack;
-quit and relaunch with \`lab open --with-research\` or
-\`lab open --with-design\` first.
+quit and relaunch with \`occtl open --with-research\` or
+\`occtl open --with-design\` first.
 
-Aliases: lab
+Aliases: opencode-command-center, lab, opencode-lab
 
 Run from any directory. Credentials stay in this harness opencode.env and are
 never copied into the selected workspace.
 
-Named 'opencode-lab' / 'lab' so it does not collide with the standalone
-OpenCode CLI binary.`);
+Named \`occtl\` so it does not collide with the standalone OpenCode CLI binary.
+Legacy Lab identifiers remain supported during v0.x.`);
   process.exit(0);
 }
 
@@ -252,7 +256,7 @@ function initOptions(values) {
     const value = values[index];
     if (value === "--yes") continue;
     if (value !== "--pack") {
-      throw new Error(`Unsupported lab init option: ${value}`);
+      throw new Error(`Unsupported occtl init option: ${value}`);
     }
     const pack = values[index + 1];
     if (!pack || pack.startsWith("-")) {
@@ -272,7 +276,7 @@ function initOptions(values) {
 function updateRef(values) {
   if (values.length === 0) return "main";
   if (values.length !== 2 || values[0] !== "--ref")
-    throw new Error("Usage: lab update [--ref REF]");
+    throw new Error("Usage: occtl update [--ref REF]");
   return values[1];
 }
 
@@ -281,14 +285,14 @@ async function lifecycleCommand() {
   if (command === "strict" && args[1] === "doctor") {
     const forwarded = args.slice(2);
     if (forwarded.some((value) => value !== "--json")) {
-      throw new Error("Usage: lab strict doctor [--json]");
+      throw new Error("Usage: occtl strict doctor [--json]");
     }
     return runNode(strictDoctor, forwarded);
   }
   if (command === "strict" && args[1] === "run") {
     const selected = pathAndForwarded(args.slice(1));
     if (selected.forwarded.length > 0) {
-      throw new Error("Usage: lab strict run [path]");
+      throw new Error("Usage: occtl strict run [path]");
     }
     return runNode(strictRun, [selected.path ?? process.cwd()]);
   }
@@ -317,7 +321,7 @@ async function lifecycleCommand() {
     const requested = selected.path ?? chooseNewWorkspaceOnMac();
     if (!requested) {
       if (process.platform !== "darwin" || !process.stdin.isTTY) {
-        throw new Error("lab new requires a project folder path.");
+        throw new Error("occtl new requires a project folder path.");
       }
       console.log("No project location selected. OpenCode was not started.");
       return 0;
@@ -347,9 +351,13 @@ async function lifecycleCommand() {
     });
     if (args.includes("--json")) printJson(result);
     else if (result.stopped) {
-      console.log(`Stopped OpenCode Lab for ${result.canonicalPath}.`);
+      console.log(
+        `Stopped OpenCode Command Center for ${result.canonicalPath}.`
+      );
     } else {
-      console.log("No foreground OpenCode Lab workspace is running.");
+      console.log(
+        "No foreground OpenCode Command Center workspace is running."
+      );
     }
     return 0;
   }
@@ -405,7 +413,7 @@ async function lifecycleCommand() {
   if (command === "verify") {
     const selected = pathAndForwarded(args);
     if (selected.forwarded.length > 0) {
-      throw new Error("Usage: lab verify [path]");
+      throw new Error("Usage: occtl verify [path]");
     }
     return runNode(verify, [selected.path ?? process.cwd()]);
   }
@@ -421,15 +429,15 @@ async function lifecycleCommand() {
       paths: hostPaths
     });
     console.log(
-      `Activated OpenCode Lab ${result.commit.slice(0, 12)}. The next lab command uses ${result.path}.`
+      `Activated OpenCode Command Center ${result.commit.slice(0, 12)}. The next occtl command uses ${result.path}.`
     );
     return 0;
   }
   if (command === "rollback") {
-    if (args.length !== 1) throw new Error("Usage: lab rollback");
+    if (args.length !== 1) throw new Error("Usage: occtl rollback");
     const result = rollbackRelease({ packageRoot, paths: hostPaths });
     console.log(
-      `Rolled back OpenCode Lab to ${result.commit.slice(0, 12)}. State backup: ${result.backup}`
+      `Rolled back OpenCode Command Center to ${result.commit.slice(0, 12)}. State backup: ${result.backup}`
     );
     return 0;
   }

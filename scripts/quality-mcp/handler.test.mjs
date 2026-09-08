@@ -62,6 +62,27 @@ test("quality service maps the TUI container workspace back to its host path", a
   });
 });
 
+test("registration scopes workspace even when shared service started for a different root", async () => {
+  await withAllowedGitWorkspace((directory, registrationToken) => {
+    process.env.QUALITY_WORKSPACE_ROOTS = resolve(directory, "unrelated-root");
+    assert.equal(
+      resolveAllowedWorkspace("/workspace", { registrationToken }),
+      realpathSync(directory)
+    );
+    assert.throws(
+      () => resolveAllowedWorkspace(process.cwd(), { registrationToken }),
+      /outside/
+    );
+    assert.throws(
+      () =>
+        resolveAllowedWorkspace(directory, {
+          registrationToken: "invalid-registration"
+        }),
+      /invalid/
+    );
+  });
+});
+
 test("quality health reports the registered project and rejects an invalid MCP registration", async () => {
   await withAllowedGitWorkspace(async (directory, registrationToken) => {
     const identity = projectIdentity(directory);

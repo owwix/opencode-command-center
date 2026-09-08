@@ -1,6 +1,6 @@
 # Public core and private extensions
 
-OpenCode Lab public core provides generic coding, planning, research, review,
+OpenCode Command Center public core provides generic coding, planning, research, review,
 preview, managed-run, safety, provenance, and release mechanisms. It does not
 contain company strategy, customer data, destinations, brand assets, product
 agents, proprietary evaluation cases, or operator credentials.
@@ -26,7 +26,7 @@ gateway signing authority.
 
 ## Telemetry
 
-OpenCode Lab has no outbound product telemetry in v0.x. It sends no product
+OpenCode Command Center has no outbound product telemetry in v0.x. It sends no product
 analytics, usage telemetry, workspace names, source code, cost events, or agent
 transcripts to the maintainers. Network traffic occurs only for
 operator-selected model/tool providers, dependency and security databases,

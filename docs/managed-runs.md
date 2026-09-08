@@ -1,5 +1,12 @@
 # Managed runs
 
+Managed attempts have independent Compose/volume namespaces and preserve their
+controller run ID. Normal cleanup stops only the attempt's services; next-launch
+reconciliation verifies dead host ownership and exact container labels before
+stopping orphans. It does not delete unpublished work, evidence or volumes.
+See [reliability evidence](reliability-implementation.md) for runtime tests and
+the distinction between deterministic workflow coverage and live-model dogfood.
+
 Managed runs turn an agent request into an isolated, recoverable, evidence-bound
 change. `/ship`, `/research`, `/parallel`, detached background jobs, and fleet
 jobs share one durable run service. The controller—not the model—owns
@@ -117,7 +124,7 @@ that exact SHA. Later changes cannot inherit an earlier passing result.
 
 ## Verification and review
 
-Verification uses the same project execution adapter as `lab verify`. Commands
+Verification uses the same project execution adapter as `occtl verify`. Commands
 are argv-based, bounded by time/output limits, and executed in the isolated
 worktree. The controller records command, status, logs, adapter, contract, and
 implementation SHA.
@@ -221,7 +228,7 @@ delete expired cache data, but refuses unpublished or dirty work.
 
 ## State layout
 
-Under the host Lab state root:
+Under the host Command Center state root:
 
 ```text
 state/

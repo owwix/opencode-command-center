@@ -1,6 +1,6 @@
 # Compatibility
 
-`versions.lock` is the source of truth for OpenCode Lab's supported runtime
+`versions.lock` is the source of truth for OpenCode Command Center's supported runtime
 combination. It binds the exact OpenCode and OpenDesign image digests, Hound and
 Node versions, state schemas, and configuration-adapter fixtures used by this
 checkout.
@@ -26,16 +26,22 @@ default coding launch requires neither.
 
 ## Update and rollback
 
-`lab version` reports the checkout commit, compatibility lock, and active staged
-release. `lab update [--ref REF]` fetches an exact commit, creates a fresh
+`occtl version` reports the checkout commit, compatibility lock, and active staged
+release. `occtl update [--ref REF]` fetches an exact commit, creates a fresh
 temporary checkout, pulls digest-pinned bases, builds every service under
 commit-specific candidate tags, verifies the real candidate OpenCode binary and
-configuration adapter without network access, and backs up host state. Only
+configuration adapter without network access, and backs up host and persistent
+volume state while sessions are stopped. Candidate session migrations are probed
+on fresh volume copies with checksummed manifests. Only
 after every step passes does it atomically switch the active-release pointer.
 
-`lab rollback` switches that pointer and image set back to the immediately
-previous staged release after taking another state backup. It deliberately does
-not overwrite newer state automatically; the reported backup remains available
-for an explicit recovery if a schema migration must also be reversed. Releases,
+`occtl rollback` switches that pointer and image set back to the immediately
+previous staged release after taking another state backup. If schema or OpenCode
+version metadata differs, pre-upgrade state is restored into fresh volumes and
+probed before activation. Newer volumes remain untouched. Host run records,
+publishing receipts and security settings are not rewound. Releases,
 backups, and failed unpublished managed work are never deleted by update or
 rollback.
+
+See [reliability evidence](reliability-implementation.md) for backup scope,
+maintenance exclusion, optional-service limitations and runtime tests.

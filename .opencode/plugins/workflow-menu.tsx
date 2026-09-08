@@ -27,7 +27,7 @@ function WorkflowMenu(props: { api: TuiPluginApi }) {
   return (
     <box width={72} padding={2} gap={1}>
       <text fg={theme.accent}>
-        <b>Lab workflow menu</b>
+        <b>Command Center workflow menu</b>
       </text>
       <text fg={theme.textMuted}>{startupMountHint(ctx)}</text>
       <text fg={theme.textMuted}>
@@ -52,7 +52,7 @@ function WorkflowMenu(props: { api: TuiPluginApi }) {
           /preview Local preview (Mac 3100/3101 for HTTP apps)
         </text>
         <text fg={theme.text}>
-          /run-local Start the mounted project the Lab way
+          /run-local Start the mounted project the Command Center way
         </text>
         <text fg={theme.text}>
           /ship Implement, test, and verify one outcome
@@ -170,8 +170,8 @@ const tui: TuiPlugin = async (api) => {
     commands: [
       {
         name: "lab.workflow-menu",
-        title: "Lab: workflow menu",
-        category: "Lab",
+        title: "Command Center: workflow menu",
+        category: "Command Center",
         namespace: "palette",
         slashName: "workflow",
         run: () => {
@@ -181,8 +181,8 @@ const tui: TuiPlugin = async (api) => {
       },
       {
         name: "lab.agents-help",
-        title: "Lab: when to use which agent",
-        category: "Lab",
+        title: "Command Center: when to use which agent",
+        category: "Command Center",
         namespace: "palette",
         slashName: "agents-help",
         run: () => {
@@ -195,7 +195,7 @@ const tui: TuiPlugin = async (api) => {
       {
         key: "ctrl+shift+w",
         cmd: "lab.workflow-menu",
-        desc: "Open Lab workflow menu"
+        desc: "Open Command Center workflow menu"
       },
       {
         key: "ctrl+shift+a",

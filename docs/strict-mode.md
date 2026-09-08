@@ -1,9 +1,9 @@
 # Strict microVM mode
 
 Strict mode uses Docker Sandboxes (`sbx`) as a separate, opt-in execution
-backend. It never silently replaces normal Docker-isolated Lab sessions.
+backend. It never silently replaces normal Docker-isolated Command Center sessions.
 
-Run `lab strict doctor` first. The initial supported host is macOS 14 or newer
+Run `occtl strict doctor` first. The initial supported host is macOS 14 or newer
 on Apple silicon with reachable Docker Desktop and the standalone `sbx` CLI.
 The doctor is read-only and fails closed when any prerequisite is missing.
 
@@ -12,15 +12,15 @@ Install and sign in using Docker's current instructions:
 - <https://docs.docker.com/ai/sandboxes/install/>
 - <https://docs.docker.com/ai/sandboxes/>
 
-Start a session with `lab strict run /path/to/repository`, `lab open
+Start a session with `occtl strict run /path/to/repository`, `occtl open
 /path/to/repository --strict`, or the v0.x-compatible `lab --strict
 --workspace /path/to/repository` form.
 
 The launcher requires a clean main checkout, then uses `sbx create --clone
 --no-share-skills`. Docker Sandboxes clones the repository inside the VM while
-the original host checkout remains read-only. Lab supplies a generated minimal
+the original host checkout remains read-only. Command Center supplies a generated minimal
 OpenCode configuration and a one-hour, chat-only gateway capability. It does
-not share host skills, normal Lab sessions, project configuration, production
+not share host skills, normal Command Center sessions, project configuration, production
 credentials, or general network authority. The signing key remains on the
 host; only the signed short-lived lease enters the sandbox.
 
@@ -36,15 +36,15 @@ The strict sandbox cannot write back to the host repository. Commit the desired
 implementation inside the sandbox, then run:
 
 ```text
-lab strict export strict_<run-id>
-lab strict adopt strict_<run-id> --approve
+occtl strict export strict_<run-id>
+occtl strict adopt strict_<run-id> --approve
 ```
 
 Export refuses dirty sandbox worktrees and packages only the binary Git patch,
 the `artifacts/` tree when present, and `.quality/verification.json` when
 present. The host writes a size-bounded bundle outside the repository and signs
 its manifest and every included file hash. `STRICT_EXPORT_SIGNING_KEY` may be
-used as a separate host-only signer; otherwise Lab uses the existing capability
+used as a separate host-only signer; otherwise Command Center uses the existing capability
 signing key.
 
 Adoption verifies the signature and every hash, requires the original clean

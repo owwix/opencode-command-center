@@ -178,11 +178,27 @@ export function reconcileHostRegistry(
         project.sessions ?? {}
       )) {
         if (session.background && !alive(session.pid)) {
-          delete project.sessions[sessionId];
+          if (session.resources) session.interrupted = true;
+          else delete project.sessions[sessionId];
         }
       }
     }
     return structuredClone(registry);
+  });
+}
+
+export function finishManagedRecovery(registryPath, launchId) {
+  return withRegistryLock(registryPath, (registry) => {
+    for (const project of Object.values(registry.projects ?? {})) {
+      for (const [id, session] of Object.entries(project.sessions ?? {})) {
+        if (
+          session.launchId === launchId &&
+          session.background &&
+          !processIsAlive(session.pid)
+        )
+          delete project.sessions[id];
+      }
+    }
   });
 }
 
@@ -194,6 +210,7 @@ export function registerForegroundLaunch(
     sessionId,
     runId,
     profile,
+    packRoots = [],
     pid = process.pid,
     registrationToken,
     conflictAction = "reject",
@@ -228,6 +245,7 @@ export function registerForegroundLaunch(
 
     const openedAt = now();
     const launch = {
+      packRoots: [...packRoots],
       launchId,
       sessionId,
       runId,
@@ -301,6 +319,8 @@ export function registerBackgroundLaunch({
   sessionId,
   runId,
   profile,
+  packRoots = [],
+  resources = null,
   pid = process.pid,
   registrationToken,
   now = () => new Date().toISOString()
@@ -310,6 +330,8 @@ export function registerBackgroundLaunch({
     const priorProject = registry.projects[identity.projectId] ?? {};
     const sessions = priorProject.sessions ?? {};
     sessions[sessionId] = {
+      resources,
+      packRoots: [...packRoots],
       launchId,
       runId,
       profile,
@@ -369,7 +391,8 @@ export function lookupRegistration(registryPath, registrationToken) {
       launchId: launch.launchId,
       sessionId: launch.sessionId,
       runId: launch.runId,
-      profile: launch.profile
+      profile: launch.profile,
+      packRoots: launch.packRoots ?? []
     };
   }
   for (const project of Object.values(registry.projects)) {
@@ -386,7 +409,8 @@ export function lookupRegistration(registryPath, registrationToken) {
           launchId: session.launchId,
           sessionId,
           runId: session.runId,
-          profile: session.profile
+          profile: session.profile,
+          packRoots: session.packRoots ?? []
         };
       }
     }

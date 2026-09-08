@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/owwix/opencode-lab/main/schemas/project-v1.schema.json",
-  "title": "OpenCode Lab project contract v1",
+  "title": "OpenCode Command Center project contract v1",
   "type": "object",
   "additionalProperties": false,
   "required": [

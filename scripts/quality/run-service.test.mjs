@@ -31,6 +31,50 @@ function fixture() {
   return { root };
 }
 
+test("a crash after authoritative save repairs stale projections without losing PR receipts", () => {
+  const { root } = fixture();
+  try {
+    const id = "run_revision_repair";
+    const directory = join(root, "runs", id);
+    mkdirSync(directory, { recursive: true });
+    const before = {
+      id,
+      state: "prepared",
+      revision: 1,
+      task: "fixture",
+      source: root
+    };
+    writeFileSync(join(directory, "run.json"), JSON.stringify(before));
+    syncControllerRun({ root, run: before });
+    const after = {
+      ...before,
+      revision: 2,
+      state: "passed",
+      publishing: {
+        pr: {
+          headSha: "abc123",
+          base: "main",
+          branch: "fixture",
+          url: "https://example.test/pr/1"
+        }
+      }
+    };
+    writeFileSync(join(directory, "run.json"), JSON.stringify(after));
+    const repaired = readDurableRun({ root, runId: id });
+    assert.equal(repaired.state, "passed");
+    assert.equal(repaired.controllerRevision, 2);
+    assert.equal(
+      repaired.externalActions.preparePr.receipt.url,
+      "https://example.test/pr/1"
+    );
+    syncControllerRun({ root, run: before });
+    assert.equal(readDurableRun({ root, runId: id }).controllerRevision, 2);
+    assert.throws(() => migrateDurableRun({ id, schemaVersion: 999 }), /newer/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 function git(cwd, args) {
   const result = spawnSync("git", ["-C", cwd, ...args], {
     encoding: "utf8"

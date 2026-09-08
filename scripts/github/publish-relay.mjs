@@ -1,9 +1,15 @@
 import { createServer } from "node:http";
 import {
+  commentOnGitHubThread,
+  createGitHubIssue,
+  listGitHubIssues,
+  listGitHubPullRequests,
   preparePullRequest,
   publishStatus,
   pushReviewedBranch,
-  redactPublishOutput
+  redactPublishOutput,
+  viewGitHubIssue,
+  viewGitHubPullRequest
 } from "./publish-boundary.mjs";
 import {
   assertCapabilityScope,
@@ -109,6 +115,47 @@ function createHandler() {
         return;
       }
       const body = await readJson(req);
+      if (req.url === "/v1/pulls") {
+        json(res, 200, listGitHubPullRequests({ workspace }));
+        return;
+      }
+      if (req.url === "/v1/pull") {
+        json(
+          res,
+          200,
+          viewGitHubPullRequest({ workspace, number: body.number })
+        );
+        return;
+      }
+      if (req.url === "/v1/issues") {
+        json(res, 200, listGitHubIssues({ workspace }));
+        return;
+      }
+      if (req.url === "/v1/issue") {
+        json(res, 200, viewGitHubIssue({ workspace, number: body.number }));
+        return;
+      }
+      if (req.url === "/v1/issue-create") {
+        json(
+          res,
+          200,
+          createGitHubIssue({ workspace, title: body.title, body: body.body })
+        );
+        return;
+      }
+      if (req.url === "/v1/comment") {
+        json(
+          res,
+          200,
+          commentOnGitHubThread({
+            workspace,
+            kind: body.kind,
+            number: body.number,
+            body: body.body
+          })
+        );
+        return;
+      }
       if (req.url === "/v1/push") {
         json(
           res,

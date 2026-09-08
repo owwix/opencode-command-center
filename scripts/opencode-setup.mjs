@@ -115,11 +115,11 @@ for (const line of snapshotLines(launchSnapshot)) console.log(line);
 const failures = checks.filter((check) => !check.ok);
 if (failures.length) {
   console.log(
-    "\nFinish the items marked !, then run `lab open` again. No workspace was started."
+    "\nFinish the items marked !, then run `occtl open` again. No workspace was started."
   );
   process.exitCode = 1;
 } else {
   console.log(
-    "\nReady. Run `lab open` to choose a workspace, or `lab open <folder>` to open one directly."
+    "\nReady. Run `occtl open` to choose a workspace, or `occtl open <folder>` to open one directly."
   );
 }

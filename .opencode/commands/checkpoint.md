@@ -1,5 +1,5 @@
 ---
-description: Save a rewindable Lab checkpoint of the current workspace WIP
+description: Save a rewindable Command Center checkpoint of the current workspace WIP
 ---
 
 Create a checkpoint of the mounted workspace:

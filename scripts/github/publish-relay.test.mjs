@@ -40,7 +40,11 @@ test("publish relay enforces authentication and protected branches", async () =>
     key: signingKey,
     ...capabilityContext,
     routes: ["github-publish"],
-    actions: ["github-publish:push", "github-publish:status"]
+    actions: [
+      "github-publish:push",
+      "github-publish:status",
+      "github-publish:issues"
+    ]
   });
   const url = `http://127.0.0.1:${port}`;
   const relay = spawn(
@@ -101,6 +105,18 @@ test("publish relay enforces authentication and protected branches", async () =>
     });
     assert.equal(statusResponse.status, 200);
     assert.deepEqual((await statusResponse.json()).branch, "main");
+
+    const deniedIssueResponse = await fetch(`${url}/v1/issue`, {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${token}`,
+        "x-opencode-capability-lease": capabilityLease,
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({ number: 1 })
+    });
+    assert.equal(deniedIssueResponse.status, 403);
+    assert.match((await deniedIssueResponse.json()).error, /capability lease/i);
 
     const pushResponse = await fetch(`${url}/v1/push`, {
       method: "POST",

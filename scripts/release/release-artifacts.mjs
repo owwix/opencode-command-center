@@ -112,7 +112,7 @@ export function bundleRelease({
       )}\n`,
       { mode: 0o600 }
     );
-    const archive = join(output, `opencode-lab-${version}.tar.gz`);
+    const archive = join(output, `opencode-command-center-${version}.tar.gz`);
     execute(runner, "tar", ["-czf", archive, "-C", tree, "."], {
       cwd: temporary
     });

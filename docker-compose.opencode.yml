@@ -61,6 +61,7 @@ services:
       - ALL
     environment:
       AGENT_GATEWAY_SIGNING_KEY: ${AGENT_GATEWAY_SIGNING_KEY:?Capability signing key is required}
+      AGENT_TRANSPORT_TOKEN: ${AGENT_TRANSPORT_TOKEN:?Launch transport token is required}
       OPENCODE_WORKSPACE_HASH: ${OPENCODE_WORKSPACE_HASH:?Workspace hash is required}
       OPENCODE_PROJECT_ID: ${OPENCODE_PROJECT_ID:?Project ID is required}
       OPENCODE_LAUNCH_SESSION_ID: ${OPENCODE_LAUNCH_SESSION_ID:?Launch session ID is required}
@@ -87,6 +88,7 @@ services:
       - /tmp:rw,noexec,nosuid,nodev,size=16m
     volumes:
       - ${HOME}/.config/gcloud/application_default_credentials.json:/run/google/adc.json:ro
+      - ${AGENT_LEASE_DIRECTORY:?Host lease directory is required}:/run/lease:ro
     networks:
       - opencode-internal
       - agent-gateway-egress
@@ -360,7 +362,7 @@ services:
       OPENCODE_TUI_CONFIG: /home/opencode/.config/opencode/tui.json
       OPENCODE_WORKSPACE_NAME: ${OPENCODE_WORKSPACE_NAME:-Workspace}
       OPENCODE_LAB_PACKS_JSON: ${OPENCODE_LAB_PACKS_JSON:-[]}
-      AGENT_GATEWAY_TOKEN: ${AGENT_CAPABILITY_LEASE:?Capability lease is required}
+      AGENT_GATEWAY_TOKEN: ${AGENT_TRANSPORT_TOKEN:?Launch transport token is required}
       OPENCODE_WORKSPACE_HASH: ${OPENCODE_WORKSPACE_HASH:?Workspace hash is required}
       OPENCODE_PROJECT_ID: ${OPENCODE_PROJECT_ID:?Project ID is required}
       OPENCODE_LAUNCH_SESSION_ID: ${OPENCODE_LAUNCH_SESSION_ID:?Launch session ID is required}
@@ -380,6 +382,10 @@ services:
       # for the selected tool profile. It contains placeholders, never secrets.
       - ${OPENCODE_RUNTIME_CONFIG:-./opencode.json}:/opencode-config/opencode.json:ro
       - ${OPENCODE_CONFIG_DIR_HOST:-./.opencode}:/opencode-config/.opencode:ro
+      # OpenCode writes only this instance-scoped ignore file during bootstrap.
+      # The host launcher creates it under project runtime state; the rest of
+      # the harness configuration remains read-only.
+      - ${OPENCODE_CONFIG_IGNORE_HOST:?Project-scoped config ignore file is required}:/opencode-config/.opencode/.gitignore:rw
       - ./README.md:/opencode-config/README.md:ro
       - ./docs/lab:/opencode-config/docs/lab:ro
       - ./scripts/security:/opencode-config/scripts/security:ro
@@ -390,6 +396,7 @@ services:
       - ./scripts/lab:/opencode-config/scripts/lab:ro
       - ./scripts/quality/dagger-source-policy.mjs:/opencode-config/scripts/quality/dagger-source-policy.mjs:ro
       - ${OPENCODE_WORKSPACE:-.}:${OPENCODE_WORKSPACE_CONTAINER:-/workspace}:rw
+      - ${OPENCODE_MANAGED_GIT_HOST:-./docker/empty-skills}:/run/managed-git:ro
       # Project-local skills when present; launcher sets OPENCODE_PROJECT_SKILLS
       # to docker/empty-skills when the workspace has no .opencode/skills.
       - ${OPENCODE_PROJECT_SKILLS:-./docker/empty-skills}:/opencode-config/project-skills:ro
@@ -450,19 +457,19 @@ services:
 
 volumes:
   open-design-state:
-    name: opencode-lab-${OPENCODE_PROJECT_ID:-unscoped}-open-design-state
+    name: ${OPENCODE_VOLUME_OPEN_DESIGN_STATE:-opencode-lab-${OPENCODE_STATE_NAMESPACE:-${OPENCODE_PROJECT_ID:-unscoped}}-open-design-state}
   hound-state:
-    name: opencode-lab-${OPENCODE_PROJECT_ID:-unscoped}-hound-state
+    name: ${OPENCODE_VOLUME_HOUND_STATE:-opencode-lab-${OPENCODE_STATE_NAMESPACE:-${OPENCODE_PROJECT_ID:-unscoped}}-hound-state}
   opencode-state:
-    name: opencode-lab-${OPENCODE_PROJECT_ID:-unscoped}-opencode-state
+    name: ${OPENCODE_VOLUME_OPENCODE_STATE:-opencode-lab-${OPENCODE_STATE_NAMESPACE:-${OPENCODE_PROJECT_ID:-unscoped}}-opencode-state}
   opencode-user-config:
-    name: opencode-lab-${OPENCODE_PROJECT_ID:-unscoped}-opencode-user-config
+    name: ${OPENCODE_VOLUME_OPENCODE_USER_CONFIG:-opencode-lab-${OPENCODE_STATE_NAMESPACE:-${OPENCODE_PROJECT_ID:-unscoped}}-opencode-user-config}
   opencode-package-cache:
-    name: opencode-lab-${OPENCODE_PROJECT_ID:-unscoped}-opencode-package-cache
+    name: ${OPENCODE_VOLUME_OPENCODE_PACKAGE_CACHE:-opencode-lab-${OPENCODE_STATE_NAMESPACE:-${OPENCODE_PROJECT_ID:-unscoped}}-opencode-package-cache}
   opencode-tmp:
-    name: opencode-lab-${OPENCODE_PROJECT_ID:-unscoped}-opencode-tmp
+    name: ${OPENCODE_VOLUME_OPENCODE_TMP:-opencode-lab-${OPENCODE_STATE_NAMESPACE:-${OPENCODE_PROJECT_ID:-unscoped}}-opencode-tmp}
   notion-publisher-state:
-    name: opencode-lab-${OPENCODE_PROJECT_ID:-unscoped}-notion-publisher-state
+    name: ${OPENCODE_VOLUME_NOTION_PUBLISHER_STATE:-opencode-lab-${OPENCODE_STATE_NAMESPACE:-${OPENCODE_PROJECT_ID:-unscoped}}-notion-publisher-state}
 
 networks:
   opencode-internal:

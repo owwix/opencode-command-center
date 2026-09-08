@@ -42,8 +42,8 @@ jobs:
         with:
           path: .
           format: cyclonedx-json
-          output-file: dist/opencode-lab-source.cdx.json
-          artifact-name: opencode-lab-source-sbom
+          output-file: dist/opencode-command-center-source.cdx.json
+          artifact-name: opencode-command-center-source-sbom
           upload-artifact: false
           upload-release-assets: false
 
@@ -52,7 +52,7 @@ jobs:
           docker buildx build
           --sbom=true
           --provenance=mode=max
-          --output=type=oci,dest=dist/opencode-lab-agent-gateway.oci.tar
+          --output=type=oci,dest=dist/opencode-command-center-agent-gateway.oci.tar
           docker/agent-gateway
 
       - name: Generate release checksums
@@ -70,5 +70,5 @@ jobs:
           gh release create "$GITHUB_REF_NAME"
           dist/*
           --verify-tag
-          --title "OpenCode Lab $GITHUB_REF_NAME"
+          --title "OpenCode Command Center $GITHUB_REF_NAME"
           --notes-file "docs/release-notes/$GITHUB_REF_NAME.md"

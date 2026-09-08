@@ -18,6 +18,12 @@ import {
   runCompatibilityChecks
 } from "./compatibility.mjs";
 import { labHostPaths } from "./host-state.mjs";
+import {
+  snapshotVolumes,
+  restoreVolumes,
+  probeSessionCopies
+} from "./state-volumes.mjs";
+import { withMaintenance } from "./maintenance.mjs";
 
 const COMMIT = /^[a-f0-9]{40}$/u;
 const SAFE_REF = /^(?!-)(?!.*(?:^|\/)\.\.(?:\/|$))[A-Za-z0-9._/-]{1,200}$/u;
@@ -237,6 +243,8 @@ export function activateRelease({
     path: releasePath,
     images: release.images ?? defaultReleaseImages(),
     compatibility: release.compatibility ?? null,
+    stateVolumes: release.stateVolumes ?? {},
+    stateSchemas: release.stateSchemas ?? null,
     backup: release.backup ?? null,
     activatedAt: new Date().toISOString(),
     previous: previous
@@ -246,6 +254,8 @@ export function activateRelease({
           path: previous.path,
           images: previous.images ?? defaultReleaseImages(),
           compatibility: previous.compatibility ?? null,
+          stateVolumes: previous.stateVolumes ?? {},
+          stateSchemas: previous.stateSchemas ?? null,
           backup: previous.backup ?? null,
           activatedAt: previous.activatedAt ?? null
         }
@@ -279,7 +289,7 @@ export function dispatchActiveRelease({
   if (!active || resolve(active.path) === resolve(packageRoot)) return null;
   const launcher = join(resolve(active.path), "scripts", "opencode-entry.mjs");
   if (!existsSync(launcher))
-    throw new Error("Active Lab release is unavailable; run lab rollback.");
+    throw new Error("Active Lab release is unavailable; run occtl rollback.");
   const result = runner(process.execPath, [launcher, ...args], {
     cwd: process.cwd(),
     stdio: "inherit",
@@ -344,7 +354,7 @@ function stageCandidateImages({ root, commit, manifest, runner }) {
   return plan.images;
 }
 
-export function performUpdate({
+function updateUnderMaintenance({
   packageRoot,
   ref = "main",
   paths = labHostPaths(),
@@ -391,6 +401,22 @@ export function performUpdate({
       paths,
       label: `before-${commit.slice(0, 12)}-${Date.now()}`
     });
+    const active = readActiveRelease(paths);
+    const volumeDirectory = join(backup, "volumes");
+    snapshotVolumes({
+      directory: volumeDirectory,
+      image: manifest.runtimes.node.image,
+      mapping: active?.stateVolumes ?? {},
+      release: active?.commit ?? gitHead(repository, runner),
+      schemas: active?.stateSchemas ?? {},
+      runner
+    });
+    const stateVolumes = restoreVolumes({ directory: volumeDirectory, runner });
+    probeSessionCopies({
+      mapping: stateVolumes,
+      image: images[IMAGE_ENV.opencode],
+      runner
+    });
     if (!existsSync(releasePath)) {
       mkdirSync(paths.releasesRoot, { recursive: true });
       renameSync(candidate, releasePath);
@@ -405,7 +431,18 @@ export function performUpdate({
     };
     return activateRelease({
       paths,
-      release: { commit, path: releasePath, images, compatibility, backup },
+      release: {
+        commit,
+        path: releasePath,
+        images,
+        compatibility,
+        backup,
+        stateVolumes,
+        stateSchemas: {
+          ...manifest.schemas,
+          opencode: manifest.components.opencode.version
+        }
+      },
       previous: current
     });
   } finally {
@@ -417,7 +454,7 @@ export function performUpdate({
   }
 }
 
-export function rollbackRelease({
+function rollbackUnderMaintenance({
   packageRoot,
   paths = labHostPaths(),
   runner = spawnSync
@@ -434,15 +471,65 @@ export function rollbackRelease({
     paths,
     label: `before-rollback-${Date.now()}`
   });
+  let stateVolumes = active.stateVolumes ?? {};
+  if (active.stateSchemas) {
+    const manifest = readCompatibilityManifest(resolve(packageRoot));
+    snapshotVolumes({
+      directory: join(backup, "volumes"),
+      image: manifest.runtimes.node.image,
+      mapping: stateVolumes,
+      release: active.commit,
+      schemas: active.stateSchemas,
+      runner
+    });
+    if (
+      JSON.stringify(active.stateSchemas) !==
+      JSON.stringify(previous.stateSchemas)
+    ) {
+      if (
+        !active.backup ||
+        !existsSync(join(active.backup, "volumes", "manifest.json"))
+      )
+        throw new Error(
+          "Rollback requires a verified pre-upgrade volume backup; the legacy host-only backup is insufficient."
+        );
+      stateVolumes = restoreVolumes({
+        directory: join(active.backup, "volumes"),
+        runner
+      });
+      probeSessionCopies({
+        mapping: stateVolumes,
+        image:
+          previous.images?.[IMAGE_ENV.opencode] ??
+          defaultReleaseImages()[IMAGE_ENV.opencode],
+        runner
+      });
+    }
+  }
   return activateRelease({
     paths,
     release: {
       ...previous,
+      stateVolumes,
       commit: previous.commit ?? gitHead(resolve(packageRoot), runner),
       backup
     },
     previous: active
   });
+}
+
+export function performUpdate(options) {
+  const paths = options.paths ?? labHostPaths();
+  return withMaintenance(paths, () =>
+    updateUnderMaintenance({ ...options, paths })
+  );
+}
+
+export function rollbackRelease(options) {
+  const paths = options.paths ?? labHostPaths();
+  return withMaintenance(paths, () =>
+    rollbackUnderMaintenance({ ...options, paths })
+  );
 }
 
 export function versionInfo({
