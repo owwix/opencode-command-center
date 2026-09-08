@@ -64,13 +64,15 @@ test("quality service maps the TUI container workspace back to its host path", a
 
 test("registration scopes workspace even when shared service started for a different root", async () => {
   await withAllowedGitWorkspace((directory, registrationToken) => {
-    process.env.QUALITY_WORKSPACE_ROOTS = resolve(directory, "unrelated-root");
+    const unrelated = resolve(directory, "unrelated-root");
+    mkdirSync(unrelated);
+    process.env.QUALITY_WORKSPACE_ROOTS = unrelated;
     assert.equal(
       resolveAllowedWorkspace("/workspace", { registrationToken }),
       realpathSync(directory)
     );
     assert.throws(
-      () => resolveAllowedWorkspace(process.cwd(), { registrationToken }),
+      () => resolveAllowedWorkspace(unrelated, { registrationToken }),
       /outside/
     );
     assert.throws(

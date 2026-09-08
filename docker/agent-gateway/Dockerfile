@@ -1,5 +1,8 @@
 FROM node:24-alpine@sha256:d32cdf619f63fe0471182d08996dd516c6275bb5fd31ae06e55a570bd9e1ad43
 
+# Security fixes newer than the pinned base; keep both OpenSSL libraries aligned.
+RUN apk add --no-cache libcrypto3=3.5.8-r0 libssl3=3.5.8-r0
+
 ENV NODE_ENV=production \
     AGENT_GATEWAY_HOST=0.0.0.0 \
     AGENT_GATEWAY_PORT=8787

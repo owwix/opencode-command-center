@@ -584,7 +584,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "55d69cdcd223eb0059d2708758ee0beeb4ea2c0b98631396484bff05a8bec1ff"
+      "sha256": "dc21ddd63131378323c7d90ad459b341ce9d479c94c404486f8dee5513f50130"
     },
     {
       "path": "docker/agent-gateway/gateway-errors.mjs",
@@ -2208,7 +2208,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "31f13692200b0dd8cebd4a58569c77ee31336a148d83530968125fabe48bdba8"
+      "sha256": "cc3f2a786a9214056b2dd69f5fbfe4dc24340839d00a098b4460ef0f86be1082"
     },
     {
       "path": "scripts/quality-mcp/http.mjs",
