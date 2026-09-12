@@ -96,12 +96,12 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@dagger.io/dagger": "0.21.8",
+    "@dagger.io/dagger": "0.21.9",
     "@open-pets/cli": "3.3.0",
     "@playwright/mcp": "0.0.80",
-    "@types/node": "^26.0.1",
-    "oxfmt": "^0.56.0",
-    "oxlint": "^1.71.0",
+    "@types/node": "^26.5.1",
+    "oxfmt": "^0.67.0",
+    "oxlint": "^1.82.0",
     "playwright": "1.63.0",
     "typescript": "^6.0.3"
   },
