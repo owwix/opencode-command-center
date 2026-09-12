@@ -1208,7 +1208,7 @@
       "source": "dependency-lock",
       "license": "various",
       "notice": "THIRD_PARTY_NOTICES.md#dependency-manifests",
-      "sha256": "335c3a9ce73f959311ca7ee26adae5119c9efebc8942682605c2eaec8a2fadae"
+      "sha256": "0d015ced875733216fa0fb7d23ce57480be132615ac5e694fb55665990064f9a"
     },
     {
       "path": "package.json",
@@ -1216,7 +1216,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "960b08f71618820f8f5b20637961c22a0730ff3fce9322d438c677428430d272"
+      "sha256": "bf4d6731ae2ca27209cbaa0a856132966337fd2a255d6631bb38dcb0c6770aa7"
     },
     {
       "path": "provenance/files.json",
