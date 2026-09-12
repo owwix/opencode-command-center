@@ -1,4 +1,4 @@
-FROM node:24.18.0-alpine@sha256:d32cdf619f63fe0471182d08996dd516c6275bb5fd31ae06e55a570bd9e1ad43 AS node-runtime
+FROM node:26.8-alpine@sha256:ef24c5053d50fdc3e4e56eb4e7ddb7861874ab0fdc797046ba897581deb8e868 AS node-runtime
 FROM ghcr.io/nexu-io/od@sha256:8620b5f5037b4cc7e4ef3779bc86571445e36764fafb7d69951a840e11aa95b8 AS open-design-runtime
 
 FROM ghcr.io/anomalyco/opencode@sha256:f3e00f8e25500150373c817e24b13f2f08e2ccd4cafd53dc3ad4827d47863b6f
