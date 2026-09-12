@@ -284,8 +284,8 @@ services:
       # Bump only when the persistent-volume ownership/layout contract changes.
       # Warm launches skip the recursive ownership repair when this matches.
       OPENCODE_STATE_INIT_VERSION: "2"
-      # Bump when clipboard, keybind, or required-plugin defaults change.
-      OPENCODE_TUI_INIT_VERSION: "1"
+      # Bump when clipboard, keybind, mouse, or required-plugin defaults change.
+      OPENCODE_TUI_INIT_VERSION: "2"
     read_only: true
     network_mode: none
     mem_limit: 64m
@@ -426,8 +426,9 @@ services:
         aliases:
           - opencode-app
 
-  # docker compose run does not publish ports. This relay shares only an
-  # internal preview network with the app while publishing loopback host ports.
+  # docker compose run does not publish ports. This relay reaches the app on the
+  # internal preview network and attaches to a non-internal ingress network so
+  # Docker Desktop can publish loopback host ports 3100/3101.
   opencode-preview:
     build:
       context: docker/opencode-preview
@@ -454,6 +455,7 @@ services:
       - /tmp:rw,noexec,nosuid,nodev,size=8m
     networks:
       - preview-internal
+      - preview-ingress
 
 volumes:
   open-design-state:
@@ -479,3 +481,6 @@ networks:
   notion-publisher-egress:
   preview-internal:
     internal: true
+  # Host port publishing requires at least one non-internal network. Only the
+  # preview relay joins this; the agent container stays off it.
+  preview-ingress:

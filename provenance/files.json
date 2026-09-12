@@ -192,7 +192,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "219fdd25d2bb0d83c7860a357f42b2247c762247b1aa2f74f63633f1fa1e46de"
+      "sha256": "046d46e020002fc5bf7ebe3e5d0cbe11e18a5fff8c9f7713f8c4157fa4c37cc8"
     },
     {
       "path": ".opencode/agents/plan.md",
@@ -200,7 +200,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "b1b9d39c3540c541450ec7010a8f882785f2fa11cc0ed2a34fac01a6008bfddc"
+      "sha256": "f3e31c69b5ff6af8c56678b438ae2a845f6dbf192e2ff513d0a01a94d3e5b411"
     },
     {
       "path": ".opencode/agents/research.md",
@@ -219,6 +219,14 @@
       "sha256": "269d8267f512914db06a711e9b428e90370bdffe378790113be26ae9d3973c1a"
     },
     {
+      "path": ".opencode/agents/visual-reviewer.md",
+      "classification": "original",
+      "source": "opencode-command-center",
+      "license": "Apache-2.0",
+      "notice": "Copyright 2026 OpenCode Command Center contributors",
+      "sha256": "cea6dc5b77f4df94097b072f1bb4263324ea1daa654b653dabf6ad87844ca385"
+    },
+    {
       "path": ".opencode/commands/browser.md",
       "classification": "attributed-upstream",
       "source": "cloudflare-harness-import",
@@ -233,6 +241,14 @@
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
       "sha256": "f48407c7db99a15bdb6f5526c598c0b9f4b4cedd6719c45c9c30f91fd7b6e238"
+    },
+    {
+      "path": ".opencode/commands/chrome.md",
+      "classification": "original",
+      "source": "opencode-command-center",
+      "license": "Apache-2.0",
+      "notice": "Copyright 2026 OpenCode Command Center contributors",
+      "sha256": "9099cc2d0ea3b07658c785d79d2fd8374d36492d40337f38289631b9085301c3"
     },
     {
       "path": ".opencode/commands/compact.md",
@@ -288,7 +304,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "a324ec9f622bcc117090ca63e29d183e7a406377c463dd4d61183d048c37b5e1"
+      "sha256": "e992fb8904833cb8281190683d5b51a90ff3524bec42bcfbe3b3a157454d53fb"
     },
     {
       "path": ".opencode/commands/publish.md",
@@ -336,7 +352,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "ad8d369a12326f195520565f8d56e85ae6411c380dbc7c680f3efeb8248e8f7f"
+      "sha256": "6ff641f2beca7d2fbd6c9c075497a9e9209744a1d8b62f16ffdcd0c44e669944"
     },
     {
       "path": ".opencode/commands/ship.md",
@@ -353,6 +369,14 @@
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
       "sha256": "d26bcf5e78b8d4ec2a6ba23dcac5a8e6a73474ae707a526aad98beffc29bafc2"
+    },
+    {
+      "path": ".opencode/commands/visual-review.md",
+      "classification": "original",
+      "source": "opencode-command-center",
+      "license": "Apache-2.0",
+      "notice": "Copyright 2026 OpenCode Command Center contributors",
+      "sha256": "e9b0cab8a15e5eb4de7dc8eeafc0a36bdbb2fdb5fb47304c2dae5af9a06f70ff"
     },
     {
       "path": ".opencode/plugins/agent-ops-lib.mjs",
@@ -432,7 +456,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "da3ab58365c67ffcd6c313f3132744e5f0b1408eb65d03c9823541d5367f9aa2"
+      "sha256": "cda27e6cb108ce570f1067c72dbe48ab3d5b690b0d812b31e9b00064f1bece52"
     },
     {
       "path": ".opencode/skills/author-project-skill/SKILL.md",
@@ -440,7 +464,7 @@
       "source": "opencode-command-center",
       "license": "Apache-2.0",
       "notice": "Copyright 2026 OpenCode Command Center contributors",
-      "sha256": "ba28b7e026fd728131788f8f5423036567ea57c2cbafce07b00fb411ccc714d7"
+      "sha256": "60ebaa47640eb6f6bc1bc37410d3d2d1816ae3513e12784753ff72df5b80527e"
     },
     {
       "path": ".opencode/skills/browser-verify/SKILL.md",
@@ -456,7 +480,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "b16cac536caf13426942b121e044af93c73440fa5c90946a4a894a68151d00ca"
+      "sha256": "c709608ab365d50b1dcb933304a8d61b60968a84c770b3f7c87dbb858a4f2bdf"
     },
     {
       "path": ".opencode/skills/project-skills/SKILL.md",
@@ -472,7 +496,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "fd3041f1eb74e4d6e51b38c6fbd1f36435c14d0de09fbb9ec85a29effd8cb064"
+      "sha256": "93c4c32c8ee917e032fa29337f516b9c9b10ef6a30567ccb03f81ce692286f79"
     },
     {
       "path": ".oxfmtrc.json",
@@ -544,7 +568,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "68c12f10d6b3b2f1eb437cb022f2ed05dba828a637cb31ce4f9acf3ff88e25f0"
+      "sha256": "a50e2bd7d5add115c31ac61ce759bb9808b218dc3a0f90180fc9135857c86b93"
     },
     {
       "path": "docker/agent-gateway/artifact-network.mjs",
@@ -624,7 +648,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "d99cd3c409a9b7caccbf5d14134c779934992f5f10b2b40f01649936b5fa2a89"
+      "sha256": "8ae94843f12424250bebdd134a3ca6d8a61dccd7e37b72d8886caebd1292830e"
     },
     {
       "path": "docker/agent-gateway/gateway.test.mjs",
@@ -824,7 +848,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "3da4470ba782fe4b5ee57cc64e8f48d0d9fa2b161083d7f6779a2f9ee08c0eb3"
+      "sha256": "1e08e3b5a8bf7c3d29d12f0a65e61b278f8509ae59d34994c0f92e4d95810725"
     },
     {
       "path": "Dockerfile.opencode.dockerignore",
@@ -848,7 +872,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "ba45f0723f8f70e3c3856f8758218b4ecda03d90b39a7cd0be719746b86c6b5c"
+      "sha256": "4db50a3c78200a04b20ce835c4647ecfac987158ee76953122e15f33bc549f4d"
     },
     {
       "path": "docs/architecture.md",
@@ -872,7 +896,7 @@
       "source": "opencode-command-center",
       "license": "Apache-2.0",
       "notice": "Copyright 2026 OpenCode Command Center contributors",
-      "sha256": "ec674b69aef6caebbd7cba717c28bc1eb8d872e23ffc4e4924bd1aec2e3963fe"
+      "sha256": "beba1fc44db0a7f5953b81492642f645a4fe7b2198e6f5ec4bcabf3479742ead"
     },
     {
       "path": "docs/cloudflare-ai-gateway.md",
@@ -920,7 +944,23 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "610f25e64aa9522fdfb5ec1041c20993d2faf514a2e96f826bf87aeb31a59e67"
+      "sha256": "eaf546f335bbcd214243e507e15168c22225ac33e6afad5c947b8b5c8fbe92cf"
+    },
+    {
+      "path": "docs/lab/frontend-workspaces.md",
+      "classification": "original",
+      "source": "opencode-command-center",
+      "license": "Apache-2.0",
+      "notice": "Copyright 2026 OpenCode Command Center contributors",
+      "sha256": "6ec0aaa5aa218a59147e77267c971607ee0e6f34c5908a34d9d117fb9c7374ce"
+    },
+    {
+      "path": "docs/lab/known-issues.md",
+      "classification": "original",
+      "source": "opencode-command-center",
+      "license": "Apache-2.0",
+      "notice": "Copyright 2026 OpenCode Command Center contributors",
+      "sha256": "48393aaa8cf7dd946895d09d0d75bf38ccc305eb63f78a7a407f94d0d92c7fd9"
     },
     {
       "path": "docs/lab/notes/README.md",
@@ -1008,7 +1048,7 @@
       "source": "opencode-command-center",
       "license": "Apache-2.0",
       "notice": "Copyright 2026 OpenCode Command Center contributors",
-      "sha256": "b9a786275d91e682c57ad8ebb6c8398b54d741514f9aa6b90f67236bf87e18ba"
+      "sha256": "50ce5bcbb78dd4b429286f1d662f71ecc1416159eaa280181cd2d96ae20bd5a5"
     },
     {
       "path": "docs/release-notes/v0.1.0-beta.1.md",
@@ -1065,6 +1105,14 @@
       "license": "Apache-2.0",
       "notice": "Copyright 2026 OpenCode Command Center contributors",
       "sha256": "673e291cdef51dca1ddadd24d9bf481d7ce5cbbf97bc4a98435c380bfa1a71a8"
+    },
+    {
+      "path": "docs/user-guide.md",
+      "classification": "original",
+      "source": "opencode-command-center",
+      "license": "Apache-2.0",
+      "notice": "Copyright 2026 OpenCode Command Center contributors",
+      "sha256": "f5437c561ea27f8396297a6334b1a63ecba239a5b6c23e64631bfee29e21058f"
     },
     {
       "path": "examples/packs/coding/opencode-lab.pack.json",
@@ -1152,7 +1200,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "53cdf065ff68cdaf3387690a101635795c24611c5f069788cb88306619351476"
+      "sha256": "0e9f4346c4414f44f574a713b8ab7fb384ebfb11148733e21e486a2d0d70bda1"
     },
     {
       "path": "package-lock.json",
@@ -1160,7 +1208,7 @@
       "source": "dependency-lock",
       "license": "various",
       "notice": "THIRD_PARTY_NOTICES.md#dependency-manifests",
-      "sha256": "2b6506852920fbf604e3564c66d186d7349c214441aa845aa8536d0bb619143a"
+      "sha256": "335c3a9ce73f959311ca7ee26adae5119c9efebc8942682605c2eaec8a2fadae"
     },
     {
       "path": "package.json",
@@ -1168,7 +1216,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "b3f83d32576002dbb8af6dcb3c3196d21dae84b3f757df9c34005c4f10b90ac6"
+      "sha256": "960b08f71618820f8f5b20637961c22a0730ff3fce9322d438c677428430d272"
     },
     {
       "path": "provenance/files.json",
@@ -1320,7 +1368,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "19bdee974d9bb731fbe47e9de066b424b0aa34dd4a185580412867aa82076116"
+      "sha256": "626c91d20ba1fa29ac7227b0c90a5d6f96ebf18eb5e85ad71c267bec38f74e53"
     },
     {
       "path": "schemas/project-v1.schema.json",
@@ -1456,7 +1504,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "6c0fdf3444d1ce332227456ada9a54cb0787b785e9ecaae57a14ea5c69b1af44"
+      "sha256": "eed305c77174cabd153ebcc6e689121f8dbf2fba06aa37f5c51fb09ba34bc6c8"
     },
     {
       "path": "scripts/lab/browser-session-relay.mjs",
@@ -1464,7 +1512,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "73d64277013897d7b18ed818644114bea19de78d2c9244069dd666ba5c54400b"
+      "sha256": "af7f33df3950058dcd747b511742659431de2b662fd10577afcd38dfc1af16a0"
     },
     {
       "path": "scripts/lab/browser-verify-relay.mjs",
@@ -1523,6 +1571,46 @@
       "sha256": "7cc1cdd73485da59a8f57bf75e0c20516c4682bd86d4522a482364ffe07cc680"
     },
     {
+      "path": "scripts/lab/connected-chrome-adapter.mjs",
+      "classification": "original",
+      "source": "opencode-command-center",
+      "license": "Apache-2.0",
+      "notice": "Copyright 2026 OpenCode Command Center contributors",
+      "sha256": "e96f445806ea551b752650190fde9717f18ff67395ce5a198956c7097b9638e0"
+    },
+    {
+      "path": "scripts/lab/connected-chrome-policy.mjs",
+      "classification": "original",
+      "source": "opencode-command-center",
+      "license": "Apache-2.0",
+      "notice": "Copyright 2026 OpenCode Command Center contributors",
+      "sha256": "513cfc02710cd09b3e6c70b0037221aa03a867724192dd0852e1dc44c0a0e65c"
+    },
+    {
+      "path": "scripts/lab/connected-chrome-transport.mjs",
+      "classification": "original",
+      "source": "opencode-command-center",
+      "license": "Apache-2.0",
+      "notice": "Copyright 2026 OpenCode Command Center contributors",
+      "sha256": "22f532b51574f88ef2d9b89684bcf7a9f87ff3710a7508a5455d1f3e68148060"
+    },
+    {
+      "path": "scripts/lab/connected-chrome.mjs",
+      "classification": "original",
+      "source": "opencode-command-center",
+      "license": "Apache-2.0",
+      "notice": "Copyright 2026 OpenCode Command Center contributors",
+      "sha256": "ad4647d3df936c339e26b46e938150a2027228178e7aebd9aba7063f919ad121"
+    },
+    {
+      "path": "scripts/lab/connected-chrome.test.mjs",
+      "classification": "original",
+      "source": "opencode-command-center",
+      "license": "Apache-2.0",
+      "notice": "Copyright 2026 OpenCode Command Center contributors",
+      "sha256": "d8ac43cfe11d0ad298fab21cefc341179ca66f253c0f8b4e86a42b669c83add9"
+    },
+    {
       "path": "scripts/lab/execution-adapters.mjs",
       "classification": "original",
       "source": "opencode-command-center",
@@ -1544,7 +1632,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "5be8b3d222799a346ca793cd903c0a1b74a99507caa57945e54d50e9591c4346"
+      "sha256": "5ec1047c06b55dd88a5511e3b7f9d978fa61fc9a0b3338efc1214f4c772c26e7"
     },
     {
       "path": "scripts/lab/fleet.mjs",
@@ -1640,7 +1728,7 @@
       "source": "opencode-command-center",
       "license": "Apache-2.0",
       "notice": "Copyright 2026 OpenCode Command Center contributors",
-      "sha256": "fea8e3d84e1d5302d2c0579dea5fcbe84e971a26b9a19fe99911eadb94661c59"
+      "sha256": "327a5bb1183d9935babb6b08696926172d08e5bcfb3377c43edeb88b695890b3"
     },
     {
       "path": "scripts/lab/launcher/git-view.mjs",
@@ -1664,7 +1752,7 @@
       "source": "opencode-command-center",
       "license": "Apache-2.0",
       "notice": "Copyright 2026 OpenCode Command Center contributors",
-      "sha256": "4879af0cf9da4831a3b1ab650131d5544ebefaac16c1c2ca6990b7ab05225f24"
+      "sha256": "53e9f2bb31a79d21745bef021d97f440adb5a0a4ab8950729043d37b89330946"
     },
     {
       "path": "scripts/lab/launcher/launch-spec.mjs",
@@ -1779,6 +1867,22 @@
       "sha256": "6ad1eab91bba86ed3d216e93318496ee88614b91c5e8cb7ec05e410a44338bed"
     },
     {
+      "path": "scripts/lab/node-dependencies.mjs",
+      "classification": "original",
+      "source": "opencode-command-center",
+      "license": "Apache-2.0",
+      "notice": "Copyright 2026 OpenCode Command Center contributors",
+      "sha256": "20c603c9da6668fdc3991a660443b6c9c135646acceb36a8ab43ca60d40dbf30"
+    },
+    {
+      "path": "scripts/lab/node-dependencies.test.mjs",
+      "classification": "original",
+      "source": "opencode-command-center",
+      "license": "Apache-2.0",
+      "notice": "Copyright 2026 OpenCode Command Center contributors",
+      "sha256": "b209dedd6b447c36ea8a93fe5888db157d89680a7d73c5045da685484d9bb27f"
+    },
+    {
       "path": "scripts/lab/opencode-launcher.test.mjs",
       "classification": "original",
       "source": "opencode-command-center",
@@ -1809,6 +1913,22 @@
       "license": "Apache-2.0",
       "notice": "Copyright 2026 OpenCode Command Center contributors",
       "sha256": "862ead2dc46cc6a98599f70fe97de107d66b9355248974129b0e42689dae58fc"
+    },
+    {
+      "path": "scripts/lab/preview-readiness.mjs",
+      "classification": "original",
+      "source": "opencode-command-center",
+      "license": "Apache-2.0",
+      "notice": "Copyright 2026 OpenCode Command Center contributors",
+      "sha256": "f39e4c98b46c485b89c37c489b988fd5dd5b8ad52b23af671618f19cebf4b02e"
+    },
+    {
+      "path": "scripts/lab/preview-readiness.test.mjs",
+      "classification": "original",
+      "source": "opencode-command-center",
+      "license": "Apache-2.0",
+      "notice": "Copyright 2026 OpenCode Command Center contributors",
+      "sha256": "adf634d529c4c80d388eeb0d1bf0765e77613de631ab3d44a7f48cca5bd118b2"
     },
     {
       "path": "scripts/lab/project-contract.mjs",
@@ -1848,7 +1968,7 @@
       "source": "opencode-command-center",
       "license": "Apache-2.0",
       "notice": "Copyright 2026 OpenCode Command Center contributors",
-      "sha256": "de3be9bd2f8cde4e7cb32a2c372f9670d9a030dd5e2e45c3a59a82644d7b8fb0"
+      "sha256": "adf8fd79e83c501f4142450978a2c5602035b1e95e6b5accb68007dea487d053"
     },
     {
       "path": "scripts/lab/project-preflight.test.mjs",
@@ -2035,6 +2155,30 @@
       "sha256": "c5885fbb6b8ed1c299f9d967621d1db78c7aebdb451ec03dc46d0ebb33af7387"
     },
     {
+      "path": "scripts/local-preview/start-lib.mjs",
+      "classification": "original",
+      "source": "opencode-command-center",
+      "license": "Apache-2.0",
+      "notice": "Copyright 2026 OpenCode Command Center contributors",
+      "sha256": "d0c86d457a45d98ba99f8393db0272f6d41a9d39a69dbbd70e2080e143a62fea"
+    },
+    {
+      "path": "scripts/local-preview/start.mjs",
+      "classification": "original",
+      "source": "opencode-command-center",
+      "license": "Apache-2.0",
+      "notice": "Copyright 2026 OpenCode Command Center contributors",
+      "sha256": "c9e419be9219a388990e59f39e08af3c54ff3056d0cc5d14a3386a6613432479"
+    },
+    {
+      "path": "scripts/local-preview/start.test.mjs",
+      "classification": "original",
+      "source": "opencode-command-center",
+      "license": "Apache-2.0",
+      "notice": "Copyright 2026 OpenCode Command Center contributors",
+      "sha256": "fb5d080c6631605c82c279111fca86a5432e3a4e978d065a21223f4bc34d5142"
+    },
+    {
       "path": "scripts/managed-task.mjs",
       "classification": "attributed-upstream",
       "source": "cloudflare-harness-import",
@@ -2136,7 +2280,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "49cc1fd00c3422b40add1d6bbc531dbb31b1e05e0212a91f79746ef92350887d"
+      "sha256": "0700caef7a154754c5b14974f32db93467b45e37c7c1f1f03ba9549cb8a46021"
     },
     {
       "path": "scripts/opencode-tui-merge.test.mjs",
@@ -2144,7 +2288,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "bcc7f82e0fa84542c01c3879a990bc9705678938070763bcc40f97ef8b54b5f3"
+      "sha256": "5def544268b1e16c36cf5472bd59b47b627fc729b9706d02241bfd465f0d1613"
     },
     {
       "path": "scripts/opencode.mjs",
@@ -2616,7 +2760,7 @@
       "source": "cloudflare-harness-import",
       "license": "MIT",
       "notice": "THIRD_PARTY_NOTICES.md#cloudflare-licensed-harness-import",
-      "sha256": "9c4858d53026913d09600a7d82ced3611b54e8b0be0f7caf823fedc5dd615aa1"
+      "sha256": "27332a82d813a5cf10d7a8aa6570ab016f0188a06c1c70977f467708205678c5"
     },
     {
       "path": "scripts/quality/visual-evidence-lib.mjs",
@@ -2851,12 +2995,20 @@
       "sha256": "0f84f86516799c040bd23cf0e59b35eead15ab92777950edeb0cc8ddd1e8c706"
     },
     {
+      "path": "test/runtime/image-input.test.mjs",
+      "classification": "original",
+      "source": "opencode-command-center",
+      "license": "Apache-2.0",
+      "notice": "Copyright 2026 OpenCode Command Center contributors",
+      "sha256": "9765750b2cbb2fc0ad28512e9c2569420efcd0b62e8e08b004e0105d10b1b6fa"
+    },
+    {
       "path": "test/runtime/model-server.mjs",
       "classification": "original",
       "source": "opencode-command-center",
       "license": "Apache-2.0",
       "notice": "Copyright 2026 OpenCode Command Center contributors",
-      "sha256": "5dabd750ae547512a78204402f2820b7874ba0cb05604d82ec1625a0c0f022ed"
+      "sha256": "0fe95fbb4523bb39e66e2f2434b1a28dbdff2a0edfe3c1a1a1113f7d3379e367"
     },
     {
       "path": "test/runtime/recovery.test.mjs",

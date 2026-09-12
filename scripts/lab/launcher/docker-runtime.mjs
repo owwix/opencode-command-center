@@ -2,6 +2,7 @@ import { execFileSync, spawn } from "node:child_process";
 import { decidePreviewLaunch } from "../preview-launch-policy.mjs";
 import { recordProjectHelper } from "../workspace-registry.mjs";
 import { reconcileManagedContainers } from "../managed-resource-recovery.mjs";
+import { dependencyMountArgs } from "../node-dependencies.mjs";
 
 export function createDockerRuntime(context, { spawnProcess = spawn } = {}) {
   const {
@@ -19,6 +20,14 @@ export function createDockerRuntime(context, { spawnProcess = spawn } = {}) {
   } = context;
 
   function dockerComposeArguments(composeArgs) {
+    if (composeArgs[0] === "run" && composeArgs.includes("opencode")) {
+      const index = composeArgs.indexOf("opencode");
+      composeArgs = [
+        ...composeArgs.slice(0, index),
+        ...dependencyMountArgs(projectId, workspaceHash),
+        ...composeArgs.slice(index)
+      ];
+    }
     const composeProjectName = launchSpec.composeProject;
     return [
       "compose",
@@ -394,6 +403,24 @@ export function createDockerRuntime(context, { spawnProcess = spawn } = {}) {
       await runDockerComposeAsync(["build", "opencode-preview"], environment);
     }
     await runDockerComposeAsync(["up", "-d", "opencode-preview"], environment);
+    // Internal-only networks do not publish host ports on Docker Desktop.
+    // Fail closed if 3100/3101 never appear so agents do not claim Mac URLs work.
+    if (!hostPortListening(3100) && !hostPortListening(3101)) {
+      runDockerCompose(["rm", "-s", "-f", "opencode-preview"], environment);
+      await runDockerComposeAsync(
+        ["up", "-d", "--force-recreate", "opencode-preview"],
+        environment
+      );
+    }
+    if (!hostPortListening(3100) && !hostPortListening(3101)) {
+      console.warn(
+        "opencode-preview started but host 3100/3101 are not listening."
+      );
+      printHostPortListeners();
+      throw new Error(
+        "Preview relay did not publish 127.0.0.1:3100/3101. Recreate with a non-internal ingress network."
+      );
+    }
     recordProjectHelper({
       registryPath: hostRegistryFile,
       projectId,

@@ -128,6 +128,11 @@ test("only the dispatcher can start nested managed runs", () => {
     /Never use Codespaces/u
   );
   assert.match(
+    read(".opencode/skills/local-preview/SKILL.md"),
+    /local-preview\/start\.mjs start/u
+  );
+  assert.match(read("opencode.json"), /local-preview\/start\.mjs\*": "allow"/u);
+  assert.match(
     read(".opencode/skills/author-project-skill/SKILL.md"),
     /workspace\/\.opencode\/skills/u
   );
@@ -157,6 +162,13 @@ test("OpenCode containers are hardened and receive no real gateway secret", () =
   assert.match(opencodeService, /preview-internal:/u);
   assert.match(opencodeService, /opencode-app/u);
   assert.match(compose, /preview-internal:\n\s+internal: true/u);
+  assert.match(compose, /preview-ingress:/u);
+  const previewService = compose
+    .split("\n  opencode-preview:")[1]
+    .split("\nvolumes:")[0];
+  assert.match(previewService, /preview-internal/u);
+  assert.match(previewService, /preview-ingress/u);
+  assert.doesNotMatch(opencodeService, /preview-ingress/u);
   assert.doesNotMatch(
     read("scripts/lab/browser-mcp.mjs"),
     /host\.docker\.internal|127\.0\.0\.1:3112/u

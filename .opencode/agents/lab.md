@@ -67,6 +67,9 @@ When the user asks to run, start, build, preview, or open a project locally:
 3. If none exists, stay on the generic `local-preview` workflow for HTTP apps.
    Loaded packs may contribute additional product run skills without changing
    this core profile.
+4. For in-container HTTP apps, start with
+   `node /opencode-config/scripts/local-preview/start.mjs start`.
+   Never use bare `npm run dev &` — it dies when the tool shell exits.
 
 Open Mac URLs are only `http://127.0.0.1:3100` and `http://127.0.0.1:3101`.
 Never mention Codespaces, Gitpod, VS Code Ports, or SSH tunnels.

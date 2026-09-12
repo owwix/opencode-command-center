@@ -419,6 +419,17 @@ export function createAgentGateway(
             capabilityLease,
             {
               ...target.headers,
+              ...(target.model === "browser-session"
+                ? {
+                    "x-lab-browser-scope": JSON.stringify({
+                      projectId: capabilityClaims.projectId,
+                      workspaceHash: capabilityClaims.workspaceHash,
+                      sessionId: capabilityClaims.sessionId,
+                      runId: capabilityClaims.runId,
+                      exp: capabilityClaims.exp
+                    })
+                  }
+                : {}),
               "x-lab-correlation-id": correlationId
             }
           ),

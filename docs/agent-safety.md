@@ -38,7 +38,10 @@ protected-branch write to the agent container.
   user to clone it or install dependencies on their laptop.
 - For local run/preview of any project, follow
   `/opencode-config/.opencode/skills/local-preview/SKILL.md` and `/preview`.
-  Bind app servers to container `0.0.0.0:3000` / `0.0.0.0:3001` (or publish
-  `127.0.0.1:3100` / `127.0.0.1:3101` from workspace compose). Tell the user to
-  open only `http://127.0.0.1:3100` and `http://127.0.0.1:3101` on the Mac.
+  Prefer
+  `node /opencode-config/scripts/local-preview/start.mjs start` for in-container
+  HTTP apps (never bare `npm run dev &`). Bind app servers to container
+  `0.0.0.0:3000` / `0.0.0.0:3001` (or publish `127.0.0.1:3100` /
+  `127.0.0.1:3101` from workspace compose). Tell the user to open only
+  `http://127.0.0.1:3100` and `http://127.0.0.1:3101` on the Mac.
   Never mention Codespaces, Gitpod, VS Code Ports, or SSH tunnels.

@@ -39,6 +39,7 @@ permission:
     "git ls-files*": deny
     "node /opencode-config/scripts/security/safe-git.mjs *": allow
     "node /opencode-config/scripts/local-preview/check.mjs*": allow
+    "node /opencode-config/scripts/local-preview/start.mjs*": allow
     "node /opencode-config/scripts/lab/browser-verify.mjs*": allow
     "rg *": deny
 ---

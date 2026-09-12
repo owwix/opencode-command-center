@@ -30,8 +30,10 @@ description: When to use this skill (triggers). Mention Command Center preview i
 2. Forbid Codespaces, Gitpod, VS Code Ports, SSH tunnels, and cloning as the
    primary path.
 3. Prefer compose or `0.0.0.0:3000`/`3001` inside the Command Center container.
-4. Point verification at `node /opencode-config/scripts/local-preview/check.mjs`
-   when running inside Command Center.
+4. Prefer
+   `node /opencode-config/scripts/local-preview/start.mjs start` for in-container
+   HTTP apps (never bare `npm run dev &`). Verify with
+   `node /opencode-config/scripts/local-preview/check.mjs` when needed.
 
 ## Agents (Tab)
 

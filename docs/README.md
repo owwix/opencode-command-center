@@ -4,6 +4,16 @@ This directory documents the public, product-neutral OpenCode Command Center cor
 with the quick start in the repository [`README.md`](../README.md), then use
 this page as the documentation index.
 
+## For users
+
+Start here if you want a complete picture of how to use Command Center day to day:
+
+- **[User guide](user-guide.md)** — in-depth walkthrough of the harness, TUI, agents,
+  preview ports, managed runs, safety, and troubleshooting.
+
+Then follow the [first-project tutorial](tutorial.md) for a hands-on path from install
+to verified pull request.
+
 ## Learn the system
 
 1. [Architecture](architecture.md) — components, trust boundaries, data flow,
@@ -36,6 +46,8 @@ this page as the documentation index.
   skills.
 - [When to use agents](lab/when-to-use-agents.md) — fixed model lanes and
   workflow-agent selection.
+- [Known issues and regressions](lab/known-issues.md) — recent operator
+  failures and harness preventions.
 
 ## Quality and security
 

@@ -51,6 +51,10 @@ function WorkflowMenu(props: { api: TuiPluginApi }) {
         <text fg={theme.text}>
           /preview Local preview (Mac 3100/3101 for HTTP apps)
         </text>
+        <text fg={theme.textMuted}>
+          Next.js dev: add allowedDevOrigins for 127.0.0.1:3100 or use next
+          start
+        </text>
         <text fg={theme.text}>
           /run-local Start the mounted project the Command Center way
         </text>

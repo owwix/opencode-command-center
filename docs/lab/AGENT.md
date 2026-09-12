@@ -37,5 +37,6 @@ Which Tab agent to use: `docs/lab/when-to-use-agents.md`.
   shared predictable temporary directory.
 - Never assign to or repurpose system environment variables such as `HOME`,
   `PATH`, `SHELL`, `TMPDIR`, or `CODEX_HOME`.
-- For local app preview, follow `local-preview` / `/preview`. Mac URLs are only
-  `http://127.0.0.1:3100` and `http://127.0.0.1:3101`.
+- For local app preview, follow `local-preview` / `/preview` and
+  `node /opencode-config/scripts/local-preview/start.mjs start`. Mac URLs are
+  only `http://127.0.0.1:3100` and `http://127.0.0.1:3101`.

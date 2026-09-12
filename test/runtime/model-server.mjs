@@ -19,6 +19,25 @@ createServer(async (request, response) => {
   const review = body.messages?.some((message) =>
     JSON.stringify(message.content).includes("REVIEW_FIXTURE")
   );
+  if (JSON.stringify(body.messages).includes("IMAGE_FIXTURE")) {
+    const received = body.messages.some(
+      (message) =>
+        Array.isArray(message.content) &&
+        message.content.some(
+          (part) =>
+            part.type === "image_url" &&
+            part.image_url?.url?.startsWith("data:image/png;base64,")
+        )
+    );
+    response.writeHead(200, { "content-type": "text/event-stream" });
+    response.write(
+      `data: ${JSON.stringify({ id: "image-fixture", object: "chat.completion.chunk", created: 1, model: "fixture", choices: [{ index: 0, delta: { content: received ? "IMAGE_BYTES_RECEIVED" : "IMAGE_MISSING" }, finish_reason: null }] })}\n\n`
+    );
+    response.end(
+      `data: ${JSON.stringify({ id: "image-fixture", object: "chat.completion.chunk", created: 1, model: "fixture", choices: [{ index: 0, delta: {}, finish_reason: "stop" }] })}\n\ndata: [DONE]\n\n`
+    );
+    return;
+  }
   if (
     body.messages?.some((message) =>
       JSON.stringify(message.content).includes("SLOW_FIXTURE")

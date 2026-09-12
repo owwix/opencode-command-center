@@ -8,6 +8,10 @@ import {
 } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { resolveExecutionAdapter } from "./execution-adapters.mjs";
+import {
+  inspectNextDevPreviewOrigins,
+  isNextJsProject
+} from "./preview-readiness.mjs";
 
 export const LAB_LOCAL_EXCLUDES = Object.freeze([
   "/.quality/",
@@ -307,6 +311,24 @@ export function collectProjectPreflight({
             .join("; ")
         )
   );
+
+  const nextPreview = inspectNextDevPreviewOrigins(canonical);
+  if (isNextJsProject(canonical)) {
+    checks.push(
+      nextPreview.ok
+        ? check(
+            "next-preview",
+            "pass",
+            "Next.js allowedDevOrigins covers Lab preview (127.0.0.1:3100)."
+          )
+        : check(
+            "next-preview",
+            "warn",
+            "Next.js dev preview may not hydrate through Mac :3100.",
+            nextPreview.detail
+          )
+    );
+  }
 
   const hardFailures = checks.filter((entry) => entry.status === "fail");
   const workspaceOwnsRepository = repository.root === canonical;

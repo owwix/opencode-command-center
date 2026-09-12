@@ -135,8 +135,10 @@ Command availability may depend on the selected profile and enabled packs.
 | `/preview`          | Start/build the project and expose Mac preview ports.                                    |
 | `/run-local`        | Run an HTTP or CLI project using matching workspace/pack skills.                         |
 | `/browser`          | Smoke-test an allowed loopback preview/gallery URL.                                      |
+| `/chrome`           | Operate one host-approved existing Chrome tab through the approval-gated controller.     |
 | `/gallery`          | Open image artifacts under `artifacts/marketing`.                                        |
 | `/view --file PATH` | Validate and report a workspace image or gallery URL.                                    |
+| `/visual-review`    | Review attached desktop/mobile screenshots without editing or publishing.                |
 | `/publish`          | Validate, commit, and push through the bounded publication flow.                         |
 | `/notion`           | Publish one Markdown file to a configured restricted Notion target.                      |
 

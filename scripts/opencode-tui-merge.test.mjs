@@ -2,15 +2,15 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { withClipboardFriendlyTui } from "./opencode-tui-merge.mjs";
 
-test("clipboard-friendly TUI disables mouse and adds copy/paste binds", () => {
+test("clipboard-friendly TUI keeps mouse on and adds copy/paste binds", () => {
   const next = withClipboardFriendlyTui({
     theme: "dracula",
-    mouse: true,
+    mouse: false,
     keybinds: { command_list: "ctrl+p" },
     plugin: ["./plugins/agent-ops.tsx"]
   });
   assert.equal(next.theme, "dracula");
-  assert.equal(next.mouse, false);
+  assert.equal(next.mouse, true);
   assert.deepEqual(next.keybinds.command_list, "ctrl+p");
   assert.deepEqual(next.keybinds.messages_copy, ["<leader>y", "ctrl+shift+c"]);
   assert.equal(next.keybinds.input_paste[0].key, "ctrl+v");

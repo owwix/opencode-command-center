@@ -38,8 +38,12 @@ occtl open "$HOME/Projects/some-app"
 
 macOS shortcut: `launch-opencode.command`.
 
+**New here?** Read the **[User guide](docs/user-guide.md)** for a full walkthrough of
+agents, preview ports, managed runs, and troubleshooting.
+
 ## Documentation
 
+- **[User guide](docs/user-guide.md)** — full feature reference for operators
 - [Documentation index](docs/README.md)
 - [Architecture and data flow](docs/architecture.md)
 - [Codebase reference](docs/code-reference.md)

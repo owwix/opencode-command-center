@@ -11,8 +11,12 @@ LABEL io.opencode-lab.build-fingerprint=${OPENCODE_LAB_IMAGE_FINGERPRINT}
 # The upstream image is intentionally minimal. Git supports normal coding
 # workflows; FFmpeg and a known font provide deterministic marketing-video
 # rendering for loaded visual workflow packs.
-RUN apk add --no-cache ffmpeg font-noto git openssh-client rsvg-convert \
+RUN apk add --no-cache chromium ffmpeg font-noto git openssh-client rsvg-convert \
   && (apk add --no-cache bubblewrap || true)
+
+# Project browser tests use the Alpine-native browser; Playwright's downloaded
+# glibc browser cannot run in this musl-based image. Network policy is unchanged.
+ENV PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium
 
 # OpenCode's official image contains the agent binary but no JavaScript
 # runtime. Copy the matching Alpine Node distribution so agents can run the

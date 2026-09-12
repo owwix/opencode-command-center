@@ -7,7 +7,7 @@
     "enabled": true
   },
   "diff_style": "stacked",
-  "mouse": false,
+  "mouse": true,
   "attention": {
     "enabled": true,
     "notifications": true,

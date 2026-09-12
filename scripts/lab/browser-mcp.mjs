@@ -3,6 +3,7 @@
  * MCP stdio bridge to the host Playwright session relay through the scoped
  * agent gateway. OpenCode never connects to the host relay directly.
  */
+import { randomUUID } from "node:crypto";
 const gatewayBase = (
   process.env.WORKERS_AI_GATEWAY_URL || "http://agent-gateway:8787"
 ).replace(/\/$/u, "");
@@ -18,7 +19,7 @@ async function call(action, params = {}) {
         "content-type": "application/json"
       },
       body: JSON.stringify({ action, ...params }),
-      signal: AbortSignal.timeout(60_000)
+      signal: AbortSignal.timeout(action === "chrome" ? 100_000 : 60_000)
     });
     const payload = await response.json();
     if (!response.ok) {
@@ -31,6 +32,26 @@ async function call(action, params = {}) {
 }
 
 const tools = [
+  {
+    name: "connected_chrome",
+    description:
+      "Opt-in control of one existing Chrome tab through the host approval terminal. Requires npm run chrome on the host. Every action (including reads) needs host approval. Never retry an uncertain mutation blindly. No credentials, uploads, arbitrary code or tab switching.",
+    inputSchema: {
+      type: "object",
+      required: ["operation"],
+      additionalProperties: false,
+      properties: {
+        operation: {
+          type: "string",
+          enum: ["snapshot", "screenshot", "navigate", "click", "type", "press"]
+        },
+        url: { type: "string" },
+        selector: { type: "string" },
+        text: { type: "string" },
+        key: { type: "string" }
+      }
+    }
+  },
   {
     name: "browser_navigate",
     description:
@@ -150,6 +171,18 @@ async function handle(message) {
     const name = message.params?.name;
     const args = message.params?.arguments ?? {};
     try {
+      if (name === "connected_chrome") {
+        const result = await call("chrome", {
+          requestId: randomUUID(),
+          input: args
+        });
+        const { image, ...details } = result;
+        const content = [{ type: "text", text: JSON.stringify(details) }];
+        if (image)
+          content.push({ type: "image", mimeType: "image/png", data: image });
+        write({ jsonrpc: "2.0", id, result: { content } });
+        return;
+      }
       const map = {
         browser_navigate: "navigate",
         browser_snapshot: "snapshot",

@@ -216,7 +216,9 @@ export function createHelperSupervisor(context) {
         `http://127.0.0.1:${BROWSER_SESSION_PORT}/health`
       );
       return (
-        response.ok && helperMatches(response.payload, "lab-browser-session")
+        response.ok &&
+        response.payload.connectedChrome === 1 &&
+        helperMatches(response.payload, "lab-browser-session")
       );
     } catch {
       return false;

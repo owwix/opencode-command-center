@@ -8,6 +8,7 @@ import { mkdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { randomUUID, timingSafeEqual } from "node:crypto";
+import { forwardConnectedChrome } from "./connected-chrome-transport.mjs";
 
 export const SESSION_PORT = Number(
   process.env.LAB_BROWSER_SESSION_PORT ?? "3112"
@@ -172,6 +173,7 @@ export function startBrowserSessionRelay({
           JSON.stringify({
             ok: true,
             service: "lab-browser-session",
+            connectedChrome: 1,
             projectId,
             workspaceHash,
             sessions: sessions.size
@@ -194,7 +196,26 @@ export function startBrowserSessionRelay({
           res.end(JSON.stringify({ error: "Invalid JSON body." }));
           return;
         }
-        const result = await handleAction(body);
+        let result;
+        if (body.action === "chrome") {
+          const scope = JSON.parse(
+            String(req.headers["x-lab-browser-scope"] || "null")
+          );
+          if (
+            !projectId ||
+            !workspaceHash ||
+            scope?.projectId !== projectId ||
+            scope?.workspaceHash !== workspaceHash
+          )
+            throw new Error(
+              "Connected Chrome requires matching gateway-verified workspace scope."
+            );
+          result = await forwardConnectedChrome({
+            scope,
+            requestId: body.requestId,
+            input: body.input
+          });
+        } else result = await handleAction(body);
         res.writeHead(200, { "content-type": "application/json" });
         res.end(JSON.stringify(result));
         return;

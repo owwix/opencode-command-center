@@ -15,7 +15,9 @@ export function withClipboardFriendlyTui(current) {
   }
   return {
     ...current,
-    mouse: false,
+    // Keep mouse on so Ctrl+P, permission dialogs, and lists are clickable.
+    // Copy/paste still works via the keybinds below (Cmd/Ctrl+V, leader+y).
+    mouse: true,
     plugin: plugins,
     keybinds: {
       ...(current.keybinds && typeof current.keybinds === "object"

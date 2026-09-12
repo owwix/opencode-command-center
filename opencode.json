@@ -66,10 +66,14 @@
         },
         "@cf/moonshotai/kimi-k2.6": {
           "name": "Kimi K2.6",
+          "attachment": true,
+          "modalities": { "input": ["text", "image"], "output": ["text"] },
           "limit": { "context": 262144, "output": 8192 }
         },
         "@cf/moonshotai/kimi-k2.7-code": {
           "name": "Kimi K2.7 Code",
+          "attachment": true,
+          "modalities": { "input": ["text", "image"], "output": ["text"] },
           "limit": { "context": 262144, "output": 8192 }
         },
         "@cf/zai-org/glm-5.2": {
@@ -230,6 +234,7 @@
       "node /opencode-config/scripts/security/safe-remove.mjs plan *": "allow",
       "node /opencode-config/scripts/security/safe-remove.mjs execute *": "ask",
       "node /opencode-config/scripts/local-preview/check.mjs*": "allow",
+      "node /opencode-config/scripts/local-preview/start.mjs*": "allow",
       "node /opencode-config/scripts/lab/checkpoint.mjs *": "allow",
       "node /opencode-config/scripts/lab/browser-verify.mjs*": "allow",
       "node /opencode-config/scripts/notion/publish.mjs *": "ask",

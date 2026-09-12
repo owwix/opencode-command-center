@@ -35,6 +35,7 @@ test("browser session health endpoint", async () => {
     assert.deepEqual(await health.json(), {
       ok: true,
       service: "lab-browser-session",
+      connectedChrome: 1,
       projectId: "project_session_test",
       workspaceHash: "workspace_session_test",
       sessions: 0
